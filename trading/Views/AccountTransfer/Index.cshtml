@@ -1,0 +1,79 @@
+﻿@model IEnumerable<trading.Models.AccountTransferView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Transfer</h1>
+
+<p>
+    <a asp-action="Create">New</a>
+</p>
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ReferenceNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountBankAccountNameFrom)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountBankAccountNameTo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Amount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeModified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeAdded)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ReferenceNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountBankAccountNameFrom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountBankAccountNameTo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Amount)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reference)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeModified)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeAdded)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

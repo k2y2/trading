@@ -1,0 +1,78 @@
+﻿@model IEnumerable<trading.Models.CostRateView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Cost Rate</h1>
+
+<p>
+    <a asp-action="Create">New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p> 
+            <input type="date" name="dateFilter" value="@ViewBag.dateFilter" />
+            <input type="submit" value="Search" class="btn btn-default" />
+            @*<a asp-action="Index">Back to Full List</a>*@
+        </p>
+    </div>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TradeDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderTradingProfileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CostFXRatio)
+            </th>
+            <th> 
+                @Html.DisplayNameFor(model => model.DateTimeModified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeAdded)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TradeDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderTradingProfileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CostFXRatio)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeModified)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeAdded)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

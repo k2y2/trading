@@ -1,0 +1,433 @@
+﻿@model trading.Models.Txn
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+ 
+<script type="text/javascript">
+    function updateProviderCurrency() {
+
+        var obj = {
+            providerTradingProfileID: $("#ProviderTradingProfileID").val()
+        };
+
+        $.ajax({
+            url: "/Txn/GetProviderCurrency",
+            type: 'GET',
+            data: obj,
+            success: function (response) {
+                var r = JSON.parse(response); 
+                var currencyOut = r["id2"]; 
+                $("#ProviderCurrencyID").val(currencyOut);
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    function updateClientCurrency() {
+
+        var obj = { 
+            clientCurrencyPairID: $("#ClientCurrencyPairID").val()
+        };
+
+        $.ajax({
+            url: "/Txn/GetClientCurrency",
+            type: 'GET',
+            data: obj, 
+            success: function (response) { 
+                var r = JSON.parse(response);
+                var currencyIn = r["id1"];
+                var currencyOut = r["id2"];
+                $("#ClientCurrencyIDIn").val(currencyIn); 
+                $("#ClientCurrencyIDOut").val(currencyOut); 
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    function updateClientCurrencyPairPriceRate() {
+
+        var obj = {
+            clientTradingProfileID: $("#ClientTradingProfileID").val() 
+        };
+
+        $.ajax({
+            url: "/Txn/GetClientCurrencyPairPriceRate",
+            type: 'GET',
+            data: obj, 
+            success: function (response) { 
+                
+                if (response != "null") { 
+                    var r = JSON.parse(response);
+                    var clientCurrencyPairID = r["CurrencyPairID"];
+                    var clientPriceRate = r["Price"];
+
+                    $("#ClientCurrencyPairID").val(clientCurrencyPairID);
+                    $("#ClientPriceRate").val(clientPriceRate);
+
+                    updateClientDfr();
+                    updateClientCurrency();
+                }
+                else {
+                    //debugger;
+                    $("#ClientCurrencyPairID").val("");
+                    $("#ClientPriceRate").val("");
+                }
+                //updateClientExRate(); 
+            },
+            error: function (response) { 
+                console.log("error"); 
+            }
+        });
+    };
+
+    function updateClientDfr() {
+        
+        var obj = {
+            tradeDate: $("#TradeDate").val(),
+            clientCurrencyPairID: $("#ClientCurrencyPairID").val()
+        };
+
+        $.ajax({
+            url: "/Txn/GetDfr",
+            type: 'GET',
+            data: obj,
+            //dataType: 'json',
+            success: function (response) {
+                //console.log(response);
+                //alert(response.Rate);
+                var r = JSON.parse(response);
+                var dfr = r["Rate"];
+                $("#ClientDfrRate").val(dfr);
+                updateClientExRate();
+                //alert(success);
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    function updateProviderCostRate() {
+
+        var obj = {
+            providerCostDate: $("#ProviderCostDate").val(),
+            providerTradingProfileID: $("#ProviderTradingProfileID").val()
+        };
+
+        $.ajax({
+            url: "/Txn/GetCostRate",
+            type: 'GET',
+            data: obj, 
+            success: function (response) { 
+                var r = JSON.parse(response);
+                var costRate = r["Rate"];
+                $("#ProviderCostRate").val(costRate);
+                updateProviderExpectedPayInAmount(); 
+            },
+            error: function (response) {
+                //console.log("error");
+
+            }
+        });
+    };
+
+    function updateClientExRate() {
+        var dfr = $("#ClientDfrRate").val();
+        var price = $("#ClientPriceRate").val();
+        var exRate = (parseFloat(price)/100 + 1) * dfr;
+        $("#ClientExRate").val(exRate.toFixed(4));
+        updateClientAmountOut();
+    };
+    
+    function updateClientAmountOut() {
+        var amtIn = $("#ClientAmountIn").val();
+        var ex = $("#ClientExRate").val();
+        if (ex > 0) {
+            var amtOut = amtIn / ex;
+            $("#ClientAmountOut").val(amtOut.toFixed(2));
+        } 
+    };
+
+    function updateClientAmountIn() {
+        var amtOut = $("#ClientAmountOut").val();
+        var ex = $("#ClientExRate").val();
+         
+        var amtIn = amtOut * ex;
+        $("#ClientAmountIn").val(amtIn.toFixed(2)); 
+    };
+
+    function updateProviderExpectedPayInAmount() {
+        var amtIn = $("#ClientAmountIn").val();
+        var costRate = $("#ProviderCostRate").val();
+        if (costRate > 0) {
+            var expectedPayInAmount = amtIn / costRate;
+            $("#ProviderExpectedPayInAmount").val(expectedPayInAmount.toFixed(2));
+        }
+    };
+    
+    $(document).ready(function () {
+        $('#ClientTradingProfileID').on('change', function () {
+            updateClientCurrencyPairPriceRate(); 
+        });
+        $('#ClientCurrencyPairID').on('change', function () {
+            updateClientDfr();
+        });
+        $('#TradeDate').on('change', function () {
+            updateClientDfr();
+            $("#ProviderCostDate").val($("#TradeDate").val());
+            updateProviderCostRate(); 
+        });
+        $('#ClientDfrRate').on('input', function () {
+            updateClientExRate();
+        });
+        $('#ClientPriceRate').on('input', function () {
+            updateClientExRate();
+        });
+        $('#ClientAmountIn').on('input', function () {
+            updateClientAmountOut();
+            updateProviderExpectedPayInAmount();
+        });
+        $('#ClientAmountOut').on('input', function () {
+            updateClientAmountIn();
+            updateProviderExpectedPayInAmount();
+        });
+
+        $('#ProviderTradingProfileID').on('change', function () {
+            updateProviderCostRate();
+            updateProviderCurrency();
+        });
+        $('#ProviderCostDate').on('change', function () {
+            updateProviderCostRate(); 
+        });
+
+    });
+            @*$.ajax('/Txn/GetData',
+                {
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: 'json',
+                    success: function () {
+                        alert("l");
+                    },
+                    error: function (jqXhr, textStatus, errorMessage) {
+                        alert(errorMessage);
+                    }
+                });
+            $.ajax({
+
+
+                url: '@Url.Action("GetData", "Txn")',
+                type: 'POST',
+                contentType: "application/json; charset=utf-8",
+
+                success: function (data) {
+                    alert("l");
+
+                },
+                error: function (data) {
+                    alert("l");
+
+                }
+
+            }).done(function (result) {
+                alert("l");
+            });;*@
+            //alert(  "Txn/GetData" );
+        
+
+
+
+    //var ddlvalue = $(this).val();
+    //alert("l");
+
+
+    //$("#ClientID").change(function () {
+    //    alert("Error: ");
+    //    // Initialization
+    //    var customerID = 23;
+    //    var firstname = "John";
+
+    //    $.ajax(
+    //        {
+    //            type: 'POST',
+    //            dataType: 'JSON',
+    //            url: '/Txn/GetData',
+    //            data: { customerID: customerID, fname: firstname },
+    //            success:
+    //                function (response) {
+    //                    // Generate HTML table.
+    //                    //convertJsonToHtmlTable(JSON.parse(response), $("#TableId"));
+    //                    alert("Error: " + response);
+    //                },
+    //            error:
+    //                function (response) {
+    //                    alert("Error: " + response);
+    //                }
+    //        });
+
+
+    //});
+</script>
+
+<h1>Create</h1>
+@if (Model.Type == "D")
+{
+    <h4>Deposit</h4>
+}
+else if (Model.Type == "L")
+{
+    <h4>LQuote</h4>
+}
+else if (Model.Type == "Q")
+{
+    <h4>Quote</h4>
+}
+<hr />
+  
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
+                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="Type" class="control-label"></label>
+                <input asp-for="Type" class="form-control" />
+                <span asp-validation-for="Type" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "Q" || Model.Type == "D")">
+                <label asp-for="LinkedDepositID" class="col-md-6 col-form-label"></label>
+                @*<input asp-for="LinkedDepositID" class="form-control" />*@
+                @Html.DropDownList("LinkedDepositID", ViewBag.Deposit as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="LinkedDepositID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="TradeDate" class="col-md-6 col-form-label"></label>
+                <input asp-for="TradeDate" type="date" class="col-md-6 form-control" />
+                <span asp-validation-for="TradeDate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ClientTradingProfileID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ClientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ClientTradingProfileID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Status" class="col-md-6 col-form-label"></label>
+                <input asp-for="Status" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientPriceRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientPriceRate" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="ClientPriceRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientCurrencyPairID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ClientCurrencyPairID", ViewBag.CurrencyPair as SelectList, "", new { @class = "col-md-6 form-control"  })
+                <span asp-validation-for="ClientCurrencyPairID" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientDfrRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientDfrRate" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="ClientDfrRate" class="text-danger"></span>
+            </div> 
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientUniqueDfr" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientUniqueDfr" type="checkbox" class="form-control" style="width: 30px; height: 30px;" value="false"/>
+                <span asp-validation-for="ClientUniqueDfr" class="text-danger"></span>
+            </div> 
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientExRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientExRate" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ClientExRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ClientCurrencyIDIn" class="col-md-6 col-form-label"></label>
+                @*<input asp-for="ClientCurrencyIDIn" class="form-control" />*@
+                @Html.DropDownList("ClientCurrencyIDIn", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ClientCurrencyIDIn" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ClientAmountIn" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientAmountIn" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="ClientAmountIn" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientCurrencyIDOut" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ClientCurrencyIDOut", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ClientCurrencyIDOut" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientAmountOut" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientAmountOut" class="col-md-6 form-control" />
+                <span asp-validation-for="ClientAmountOut" class="text-danger"></span>
+            </div>
+            @*<div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="ClientPayOutAccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ClientPayOutAccountID", ViewBag.Account as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ClientPayOutAccountID" class="text-danger"></span>
+            </div>*@
+            <div class="form-group row" hidden="@(Model.Type == "L")">
+                <label asp-for="ProviderTradingProfileID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ProviderTradingProfileID", ViewBag.ProviderTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ProviderTradingProfileID" class="text-danger"></span>
+            </div>
+            <div class="form-group row"  hidden >
+                <label asp-for="ProviderCurrencyID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ProviderCurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ProviderCurrencyID" class="text-danger"></span>
+            </div> 
+            <div class="form-group row" hidden="@(Model.Type == "L")">
+                <label asp-for="ProviderCostDate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderCostDate" type="date" class="col-md-6 form-control" />
+                <span asp-validation-for="ProviderCostDate" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "L")">
+                <label asp-for="ProviderCostRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderCostRate" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ProviderCostRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "L")">
+                <label asp-for="ProviderExpectedPayInAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderExpectedPayInAmount" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ProviderExpectedPayInAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "L")">
+                <label asp-for="ProviderBankAccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ProviderBankAccountID", ViewBag.ProviderBankAccount as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ProviderBankAccountID" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="DateTimeModified" class="control-label"></label>
+            <input asp-for="DateTimeModified" class="form-control" />
+            <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DateTimeAdded" class="control-label"></label>
+            <input asp-for="DateTimeAdded" class="form-control" />
+            <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

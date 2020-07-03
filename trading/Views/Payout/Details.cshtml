@@ -1,0 +1,109 @@
+﻿@model trading.Models.PayoutView
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Payout</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ReferenceNo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ReferenceNo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.TxnReferenceNo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.TxnReferenceNo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientPayoutCurrencyName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientPayoutCurrencyName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientPayoutAmount)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientPayoutAmount)
+        </dd>
+        @*<dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientPayoutUSDRate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientPayoutUSDRate)
+        </dd>*@
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProviderPayinCurrencyName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ProviderPayinCurrencyName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProviderPayinAmount)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ProviderPayinAmount)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ProviderPayinUSDRate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ProviderPayinUSDRate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UsedCurrencyName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UsedCurrencyName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UsedAmount)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UsedAmount)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UsedClientPayoutFXRate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UsedClientPayoutFXRate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.UsedUSDRate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.UsedUSDRate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.AccountName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.AccountName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeModified)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeModified)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

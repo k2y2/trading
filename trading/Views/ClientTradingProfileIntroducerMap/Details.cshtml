@@ -1,0 +1,55 @@
+﻿@model trading.Models.ClientTradingProfileIntroducerMapView
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Client Trading Profile - Introducer Map</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ClientTradingProfileName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ClientTradingProfileName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IntroducerName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IntroducerName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IntroducerCommissionTypeName)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IntroducerCommissionTypeName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.IntroducerCommissionRate)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.IntroducerCommissionRate)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTimeModified)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateTimeModified)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

@@ -1,0 +1,157 @@
+﻿@model trading.Models.AccountBankAccount
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function validateIBAN() {
+
+        var obj = {
+            iban: $("#IBAN").val()
+        };
+
+        $.ajax({
+            url: "/AccountBankAccount/ValidateIBAN",
+            type: 'GET',
+            data: obj,
+            success: function (response) {
+                //var r = JSON.parse(response);
+                //debugger;
+                var message = response;
+                $("#IBANMessage").text(message);
+            },
+            error: function (response) {
+                $("#IBANMessage").text("Error");
+
+            }
+        });
+    };
+
+    $(document).ready(function () {
+        $('#IBAN').on('input', function () {
+            $("#IBANMessage").text("");
+        });
+        $('#IBANValidator').on('click', function () {
+            $("#IBANMessage").text("Checking...");
+            validateIBAN();
+        });
+
+    });
+</script>
+
+<h1>Create</h1>
+
+<h4>APA Bank Account</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="AccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("AccountID", ViewBag.Account as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="AccountID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountName" class="col-md-6 col-form-label"></label>
+                <input asp-for="AccountName" class="col-md-6 form-control" />
+                <span asp-validation-for="AccountName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="CurrencyID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("CurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="CurrencyID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountTypeID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("AccountTypeID", ViewBag.AccountType as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="AccountTypeID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountHolderName" class="col-md-6 col-form-label"></label>
+                <input asp-for="AccountHolderName" class="col-md-6 form-control" />
+                <span asp-validation-for="AccountHolderName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountHolderAddress" class="col-md-6 col-form-label"></label>
+                <input asp-for="AccountHolderAddress" class="col-md-6 form-control" />
+                <span asp-validation-for="AccountHolderAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountNo" class="col-md-6 col-form-label"></label>
+                <input asp-for="AccountNo" class="col-md-6 form-control" />
+                <span asp-validation-for="AccountNo" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="IBAN" class="col-md-6 col-form-label"></label>
+                <input asp-for="IBAN" class="col-md-6 form-control" />
+                <span asp-validation-for="IBAN" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label class="col-md-6 "> </label>
+                <button id="IBANValidator" type="button" class="col-md-3 btn btn-default">Validate</button>
+                <label id="IBANMessage" class="col-md-3 col-form-label"></label>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BSB" class="col-md-6 col-form-label"></label>
+                <input asp-for="BSB" class="col-md-6 form-control" />
+                <span asp-validation-for="BSB" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BankCode" class="col-md-6 col-form-label"></label>
+                <input asp-for="BankCode" class="col-md-6 form-control" />
+                <span asp-validation-for="BankCode" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BankName" class="col-md-6 col-form-label"></label>
+                <input asp-for="BankName" class="col-md-6 form-control" />
+                <span asp-validation-for="BankName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="SWIFT" class="col-md-6 col-form-label"></label>
+                <input asp-for="SWIFT" class="col-md-6 form-control" />
+                <span asp-validation-for="SWIFT" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="CountryID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("CountryID", ViewBag.Country as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="CountryID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="BranchAddress" class="col-md-6 col-form-label"></label>
+                <input asp-for="BranchAddress" class="col-md-6 form-control" />
+                <span asp-validation-for="BranchAddress" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Reference" class="col-md-6 col-form-label"></label>
+                <input asp-for="Reference" class="col-md-6 form-control" />
+                <span asp-validation-for="Reference" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                    <label asp-for="DateTimeModified" class="control-label"></label>
+                    <input asp-for="DateTimeModified" class="form-control" />
+                    <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="DateTimeAdded" class="control-label"></label>
+                    <input asp-for="DateTimeAdded" class="form-control" />
+                    <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+                </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

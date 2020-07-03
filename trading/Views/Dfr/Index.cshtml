@@ -1,0 +1,122 @@
+﻿@model IEnumerable<trading.Models.DfrView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function updateDfrTest() {
+
+        $.ajax({
+            url: "/Dfr/UpdateDfrTest",
+            type: 'POST',
+            success: function (response) {
+                var r = JSON.parse(response);
+
+                location.reload();
+
+            },
+            error: function (response) {
+                //console.log("error");
+            }
+        });
+    };
+
+    function updateDfr() {
+         
+        $.ajax({
+            url: "/Dfr/UpdateDfr",
+            type: 'POST', 
+            success: function (response) {
+                var r = JSON.parse(response);
+                 
+                location.reload();
+                 
+            },
+            error: function (response) {
+                //console.log("error");
+            }
+        });
+    };
+
+    $(document).ready(function () {
+        $('#Update').on('click', function () {
+            updateDfr();
+        });
+        $('#UpdateTest').on('click', function () {
+            updateDfrTest();
+        });
+    });
+
+</script>
+
+<h1>DFR</h1>
+
+<p>
+    <a asp-action="Create">New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <input type="date" name="dateFilter" value="@ViewBag.dateFilter" />
+            <input type="submit" value="Search" class="btn btn-default" />
+            <input id="Update" type="button" value="Update" class="btn btn-default" />
+            <input id="UpdateTest" type="button" value="UpdateTest" class="btn btn-default" />
+            @*<a asp-action="Index">Back to Full List</a>*@
+        </p>
+    </div>
+</form>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.TradeDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyPairName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeModified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeAdded)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TradeDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencyPairName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeModified)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeAdded)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

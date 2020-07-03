@@ -1,0 +1,44 @@
+﻿@model trading.Models.Provider
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Provider</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="ProviderName" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderName" class="col-md-6 form-control" />
+                <span asp-validation-for="ProviderName" class="text-danger"></span>
+            </div> 
+            @*<div class="form-group">
+                <label asp-for="DateTimeModified" class="control-label"></label>
+                <input asp-for="DateTimeModified" class="form-control" />
+                <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateTimeAdded" class="control-label"></label>
+                <input asp-for="DateTimeAdded" class="form-control" />
+                <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

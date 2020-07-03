@@ -1,0 +1,20 @@
+﻿
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+    <form method="post" action="@Url.Action("Login", "Home")">
+        <table border="0" cellpadding="2" cellspacing="2">
+            <tr>
+                <td>User Name</td>
+                <td><input type="text" name="UserName"></td>
+            </tr>
+            <tr>
+                <td>Password</td>
+                <td><input type="password" name="Password"></td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td><input type="submit" value="Login"></td>
+            </tr>
+        </table>
+    </form>

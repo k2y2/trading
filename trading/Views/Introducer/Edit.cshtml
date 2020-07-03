@@ -1,0 +1,50 @@
+﻿@model trading.Models.Introducer
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Introducer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="form-group row">
+                <label asp-for="IntroducerName" class="col-md-6 col-form-label"></label>
+                <input asp-for="IntroducerName" class="col-md-6 form-control" />
+                <span asp-validation-for="IntroducerName" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="IntroducerLegalName" class="col-md-6 col-form-label"></label>
+                <input asp-for="IntroducerLegalName" class="col-md-6 form-control" />
+                <span asp-validation-for="IntroducerLegalName" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="DateTimeModified" class="control-label"></label>
+                <input asp-for="DateTimeModified" class="form-control" />
+                <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+            </div>*@
+            <div class="form-group" hidden>
+                <label asp-for="DateTimeAdded" class="control-label"></label>
+                <input asp-for="DateTimeAdded" class="form-control" />
+                <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

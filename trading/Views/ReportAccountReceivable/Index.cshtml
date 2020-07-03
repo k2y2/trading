@@ -1,0 +1,52 @@
+﻿@model IEnumerable<trading.Models.ReportAccountReceivable>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Account Receivable</h1>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderTradingProfileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmountReceivable)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyName2)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AmountReceivableUSD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th> 
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProviderTradingProfileName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountReceivable)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencyName2)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AmountReceivableUSD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td> 
+            </tr>
+        }
+    </tbody>
+</table>

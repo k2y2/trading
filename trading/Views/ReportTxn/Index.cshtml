@@ -1,0 +1,120 @@
+﻿@model IEnumerable<trading.Models.ReportTxn>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>TX Gross Profit</h1>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <table class="table-borderless">
+                <tr>
+                    <td>Client Trading Profile:</td>
+                    <td>@Html.DropDownList("clientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Provider Trading Profile:</td>
+                    <td>@Html.DropDownList("providerTradingProfileID", ViewBag.ProviderTradingProfile as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="date" id="dateFilterStart" name="dateFilterStart" value="@ViewBag.dateFilterStart" /></td>
+                    <td><input type="date" id="dateFilterEnd" name="dateFilterEnd" value="@ViewBag.dateFilterEnd" /></td>
+                    <td><input type="submit" value="Search" class="btn btn-default" /></td>
+                </tr>
+            </table> 
+            @Html.ActionLink("Generate PDF", "GeneratePDF", "ReportTxn", null, new { onclick = "this.href += '?dateFilterStart=' + document.getElementById('dateFilterStart').value + '&dateFilterEnd=' + document.getElementById('dateFilterEnd').value;", target = "_blank" })
+
+        </p>
+    </div>
+</form>
+<table class="table table-striped table-bordered table-sticky" data-sticky-top="thead tr:first-child" data-sticky-left="tr td:first-child, tr th:first-child">
+     <thead>
+         <tr>
+             <th>
+                 @Html.DisplayNameFor(model => model.TradeDate)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.ClientTradingProfileName)
+             </th> 
+             <th>
+                 @Html.DisplayNameFor(model => model.ProviderTradingProfileName)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.GrossProfitUSD)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.GrossProfitUSDPct)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.ClientCurrencyNameOut)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.ClientAmountOut)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.ReferenceNo)
+             </th> 
+             <th>
+                 @Html.DisplayNameFor(model => model.ProviderPayinUSD)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.ClientPayoutUSD)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.IntroducerCommissionUSD1)
+             </th>
+             <th>
+                 @Html.DisplayNameFor(model => model.IntroducerCommissionUSD2)
+             </th>
+         </tr>
+    </thead>
+     <tbody>
+         @foreach (var item in Model)
+         {
+         <tr>
+             <td>
+                 @Html.DisplayFor(modelItem => item.TradeDate)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ClientTradingProfileName)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ProviderTradingProfileName)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.GrossProfitUSD)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.GrossProfitUSDPct)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ClientCurrencyNameOut)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ClientAmountOut)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ReferenceNo)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ProviderPayinUSD)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.ClientPayoutUSD)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.IntroducerCommissionUSD1)
+             </td>
+             <td>
+                 @Html.DisplayFor(modelItem => item.IntroducerCommissionUSD2)
+             </td>
+         </tr>
+         }
+        <tr><td></td><td>Total</td><td><label class="control-label">@ViewBag.Total</label> </td></tr>
+     </tbody>
+</table>

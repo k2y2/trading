@@ -1,0 +1,52 @@
+﻿@model IEnumerable<trading.Models.ReportAccountBalance>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Account Balance</h1>
+ 
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountName)
+            </th> 
+            <th>
+                @Html.DisplayNameFor(model => model.Balance)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceUSD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Balance)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CurrencyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.BalanceUSD)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rate)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,33 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<h1>Commission Report</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        @using (Html.BeginForm("Export", "ReportCommission", FormMethod.Post))
+        {
+            <div class="form-group row">
+                <label class="col-md-6 col-form-label">Month</label>
+                @Html.DropDownList("Month", ViewBag.Month as SelectList, new { @class = "col-md-6 form-control" })
+            </div>
+            <div class="form-group row">
+                <label class="col-md-6 col-form-label">Introducer</label>
+                @Html.DropDownList("IntroducerID", ViewBag.Introducer as SelectList, "ALL", new { @class = "col-md-6 form-control" })
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-6 col-form-label"> </label>
+                <input type="submit" name="Export" value="EXCEL" class="col-md-6 form-control" />
+            </div>
+            <div class="form-group row">
+                <label class="col-md-6 col-form-label"> </label>
+                <input type="submit" name="Export" value="PDF" class="col-md-6 form-control" />
+            </div>
+        }
+    </div>
+</div>

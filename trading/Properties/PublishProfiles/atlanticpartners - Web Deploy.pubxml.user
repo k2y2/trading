@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+This file is used by the publish/package process of your Web project. You can customize the behavior of this process
+by editing this MSBuild file. In order to learn more about this please visit https://go.microsoft.com/fwlink/?LinkID=208121. 
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <TimeStampOfAssociatedLegacyPublishXmlFile />
+    <EncryptedPassword>AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAgD7YIaaOhU29zVZJPDFU8AAAAAACAAAAAAAQZgAAAAEAACAAAAC4ZGFZOLUvGxTyDj3BpB2TAUENXTFvmN8UQGqicIWs+gAAAAAOgAAAAAIAACAAAABRWWYoI8IPIVPaYd26SdIHN+t8GeDbTkpKoDlGAuxzYoAAAABC6w7HeHNc2XYzvn+REBmM3xoP5xzZzH7wynTxiOWgc4EO6+ZT3HAhFPmY1EoKdyYdqyLLOikZEHuztsjg9B+lEpOm06yGjtz0AqKS5ElwSNvD/gylHpD73RcKl8JNVe5REKaeiu6etDXzSC2eeXZXCtG+eXgcOtr0uLthgbAyg0AAAADJ2ivxVSsn7TJR+QbpiUPkSRZiOttZAvzAH17/AbH8FuynWTUy+p0rj4oJ43sB17KUNzfxUJv04ufmWjQoR/Qx</EncryptedPassword>
+  </PropertyGroup>
+  <ItemGroup>
+    <DestinationConnectionStrings Include="tradingDB">
+      <Value>Server=atlanticpartners.eastus.cloudapp.azure.com%3bDatabase=trading%3bIntegrated Security=False%3bUser ID=k2y2%3bPassword=Phoenix61905082</Value>
+    </DestinationConnectionStrings>
+  </ItemGroup>
+</Project>

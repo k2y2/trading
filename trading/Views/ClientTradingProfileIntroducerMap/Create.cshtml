@@ -1,0 +1,59 @@
+﻿@model trading.Models.ClientTradingProfileIntroducerMap
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>Client Trading Profile - Introducer Map</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="ClientTradingProfileID" class="col-md-6 col-form-label"></label>  
+                @Html.DropDownList("ClientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ClientTradingProfileID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="IntroducerID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("IntroducerID", ViewBag.Introducer as SelectList, "", new { @class = "col-md-6 form-control" }) 
+                <span asp-validation-for="IntroducerID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="IntroducerCommissionTypeID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("IntroducerCommissionTypeID", ViewBag.IntroducerCommissionType as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="IntroducerCommissionTypeID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="IntroducerCommissionRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="IntroducerCommissionRate" class="col-md-6 form-control" />
+                <span asp-validation-for="IntroducerCommissionRate" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="DateTimeModified" class="control-label"></label>
+                <input asp-for="DateTimeModified" class="form-control" />
+                <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateTimeAdded" class="control-label"></label>
+                <input asp-for="DateTimeAdded" class="form-control" />
+                <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

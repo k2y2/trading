@@ -1,0 +1,79 @@
+﻿@model trading.Models.ReportTxn
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Create</h1>
+
+<h4>ReportTxn</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="ProviderPayinUSD" class="control-label"></label>
+                <input asp-for="ProviderPayinUSD" class="form-control" />
+                <span asp-validation-for="ProviderPayinUSD" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientPayoutUSD" class="control-label"></label>
+                <input asp-for="ClientPayoutUSD" class="form-control" />
+                <span asp-validation-for="ClientPayoutUSD" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IntroducerCommissionUSD1" class="control-label"></label>
+                <input asp-for="IntroducerCommissionUSD1" class="form-control" />
+                <span asp-validation-for="IntroducerCommissionUSD1" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferenceNo" class="control-label"></label>
+                <input asp-for="ReferenceNo" class="form-control" />
+                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TradeDate" class="control-label"></label>
+                <input asp-for="TradeDate" class="form-control" />
+                <span asp-validation-for="TradeDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientTradingProfileName" class="control-label"></label>
+                <input asp-for="ClientTradingProfileName" class="form-control" />
+                <span asp-validation-for="ClientTradingProfileName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientCurrencyNameOut" class="control-label"></label>
+                <input asp-for="ClientCurrencyNameOut" class="form-control" />
+                <span asp-validation-for="ClientCurrencyNameOut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClientAmountOut" class="control-label"></label>
+                <input asp-for="ClientAmountOut" class="form-control" />
+                <span asp-validation-for="ClientAmountOut" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GrossProfitUSD" class="control-label"></label>
+                <input asp-for="GrossProfitUSD" class="form-control" />
+                <span asp-validation-for="GrossProfitUSD" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="GrossProfitUSDPct" class="control-label"></label>
+                <input asp-for="GrossProfitUSDPct" class="form-control" />
+                <span asp-validation-for="GrossProfitUSDPct" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

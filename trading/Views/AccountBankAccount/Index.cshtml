@@ -1,0 +1,145 @@
+﻿@model IEnumerable<trading.Models.AccountBankAccountView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>APA Bank Account</h1>
+
+<p>
+    <a asp-action="Create">New</a>
+</p>
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <table class=" table-borderless">
+            <tr><td>APA Account Holder</td><td></td></tr>
+            <tr>
+                <td>@Html.DropDownList("accountID", ViewBag.Account as SelectList, "")</td>
+                <td><input type="submit" value="Search" class="btn btn-default" /></td>
+            </tr>
+        </table>
+    </div>
+</form>
+
+<table class="table table-striped table-sticky table-bordered" data-sticky-top="thead tr:first-child" data-sticky-left="tr td:first-child, tr th:first-child">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.MasterAccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountTypeName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountHolderName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountHolderAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.IBAN)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BSB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankCode)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BankName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SWIFT)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CountryName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BranchAddress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Reference)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeModified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeAdded)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MasterAccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CurrencyName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountTypeName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountHolderName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountHolderAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AccountNo)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.IBAN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BSB)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankCode)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BankName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SWIFT)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CountryName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BranchAddress)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Reference)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeModified)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTimeAdded)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

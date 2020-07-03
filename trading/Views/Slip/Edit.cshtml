@@ -1,0 +1,147 @@
+﻿@model trading.Models.Slip
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function updateTxn() {
+
+        var obj = {
+            providerTradingProfileID: $("#ProviderTradingProfileID").val()
+        };
+        $.ajax({
+            type: "GET",
+            url: "/Slip/GetTxn",
+            data: obj,
+            dataType: 'json',
+            success: function (data) {
+                $("#TxnID").empty();
+                $("#TxnID").append('<option value=""></option>');
+                $.each(data, function (i, txn) {
+                    //debugger;
+                    $("#TxnID").append('<option value="'
+                        + txn.id  + '">' +
+                        txn.referenceNo + '</option>');
+                });
+            },
+            error: function (response) {
+                //console.log("error");
+            }
+        });
+
+    };
+
+    function updateSender() {
+
+        var obj = {
+            providerTradingProfileID: $("#ProviderTradingProfileID").val()
+        };
+        $.ajax({
+            type: "GET",
+            url: "/Slip/GetSender",
+            data: obj,
+            dataType: 'json',
+            success: function (data) {
+                $("#SenderID").empty();
+                $("#SenderID").append('<option value=""></option>');
+                $.each(data, function (i, sender) {
+                    //debugger;
+                    $("#SenderID").append('<option value="'
+                        + sender.id + '">' +
+                        sender.senderName + '</option>');
+                });
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    $(document).ready(function () {
+        $('#ProviderTradingProfileID').on('change', function () {
+            updateTxn();
+        });
+
+        $('#ProviderTradingProfileID').on('change', function () {
+            updateSender();
+        });
+    });
+
+</script>
+<h1>Edit</h1>
+
+<h4>Slip</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="form-group row">
+                <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
+                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="SlipDate" class="col-md-6 col-form-label"></label>
+                <input asp-for="SlipDate" type="date" class="col-md-6 form-control" />
+                <span asp-validation-for="SlipDate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ProviderTradingProfileID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("ProviderTradingProfileID", ViewBag.ProviderTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="ProviderTradingProfileID" class="text-danger"></span>
+            </div>
+            @*<div class="form-group row">
+            <label asp-for="TxnID" class="col-md-6 col-form-label"></label>
+            @Html.DropDownList("TxnID", ViewBag.Txn as SelectList, "", new { @class = "col-md-6 form-control" })
+            <span asp-validation-for="TxnID" class="text-danger"></span>
+        </div>*@
+            <div class="form-group row">
+                <label asp-for="AccountBankAccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("AccountBankAccountID", ViewBag.AccountBankAccount as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="AccountBankAccountID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="SenderID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("SenderID", ViewBag.Sender as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="SenderID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="SlipAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="SlipAmount" class="col-md-6 form-control" />
+                <span asp-validation-for="SlipAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ActualAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="ActualAmount" class="col-md-6 form-control" />
+                <span asp-validation-for="ActualAmount" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="DateTimeModified" class="control-label"></label>
+            <input asp-for="DateTimeModified" class="form-control" />
+            <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+        </div>*@
+            <div class="form-group" hidden>
+                <label asp-for="DateTimeAdded" class="control-label"></label>
+                <input asp-for="DateTimeAdded" class="form-control" />
+                <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

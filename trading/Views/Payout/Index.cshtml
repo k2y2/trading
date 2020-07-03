@@ -1,0 +1,164 @@
+﻿@model IEnumerable<trading.Models.PayoutView>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Payout</h1>
+
+<p>
+    <a asp-action="Create">New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <table class="table-borderless">
+                <tr>
+                    <td>Client Trading Profile:</td>
+                    <td>@Html.DropDownList("clientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Provider Trading Profile:</td>
+                    <td>@Html.DropDownList("providerTradingProfileID", ViewBag.ProviderTradingProfile as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="date" name="dateFilterStart" value="@ViewBag.dateFilterStart" /></td>
+                    <td><input type="date" name="dateFilterEnd" value="@ViewBag.dateFilterEnd" /></td>
+                    <td><input type="submit" value="Search" class="btn btn-default" /></td>
+                </tr>
+            </table>
+            @*<a asp-action="Index">Back to Full List</a>*@
+        </p>
+    </div>
+</form>
+<table class="table table-striped table-sticky" data-sticky-top="thead tr:first-child" data-sticky-left="tr td:first-child, tr th:first-child">
+    <thead>
+        <tr>
+            <th></th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientTradingProfileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.LinkedProviderTradingProfileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TradeDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientPayoutCurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientPayoutAmount)
+            </th>
+            @*<th>
+            @Html.DisplayNameFor(model => model.ClientPayoutUSDRate)
+        </th>*@
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderPayinCurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderPayinAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderPayinUSDRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsedCurrencyName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsedAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsedClientPayoutFXRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UsedUSDRate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TxnReferenceNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ReferenceNo)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.AccountName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeModified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateTimeAdded)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.id">Delete</a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientTradingProfileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LinkedProviderTradingProfileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TradeDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientPayoutCurrencyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientPayoutAmount)
+            </td>
+            @*<td>
+            @Html.DisplayFor(modelItem => item.ClientPayoutUSDRate)
+        </td>*@
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderPayinCurrencyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderPayinAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderPayinUSDRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsedCurrencyName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsedAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsedClientPayoutFXRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UsedUSDRate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TxnReferenceNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReferenceNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AccountName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeModified)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateTimeAdded)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

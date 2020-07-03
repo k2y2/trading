@@ -1,0 +1,40 @@
+﻿@model trading.Models.CurrencyPair
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Delete</h1>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>Currency Pair</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.CurrencyPairName)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.CurrencyPairName)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeModified)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeModified)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="id" />
+        <input type="submit" value="Delete" class="btn btn-danger" /> |
+        <a asp-action="Index">Back to List</a>
+    </form>
+</div>

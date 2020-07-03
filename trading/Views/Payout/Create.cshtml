@@ -1,0 +1,179 @@
+﻿@model trading.Models.Payout
+
+@{
+    ViewData["Title"] = "Create";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+    function getTxn() {
+
+        var obj = {
+            txnID: $("#TxnID").val() 
+        };
+
+        $.ajax({
+            url: "/Payout/GetTxn",
+            type: 'GET',
+            data: obj, 
+            success: function (response) { 
+                var r = JSON.parse(response);
+                var clientPayoutCurrencyName = r["ClientCurrencyNameOut"];
+                $("#ClientPayoutCurrencyName").val(clientPayoutCurrencyName);
+
+                var clientPayoutAmount = r["ClientAmountOut"];
+                $("#ClientPayoutAmount").val(clientPayoutAmount);
+                updateUsedAmount();
+
+                var providerPayinCurrencyName = r["LinkedProviderCurrencyName"];
+                $("#ProviderPayinCurrencyName").val(providerPayinCurrencyName);
+
+                var providerPayinAmount = r["LinkedProviderExpectedPayInAmount"];
+                $("#ProviderPayinAmount").val(providerPayinAmount);
+                
+                //updateClientExRate(); 
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    function updateUsedClientPayoutFXRate() {
+        var usedAmount = $("#UsedAmount").val();
+        var clientPayoutAmount = $("#ClientPayoutAmount").val();
+        if (clientPayoutAmount > 0) {
+            var usedClientPayoutFXRate = usedAmount / clientPayoutAmount;
+            $("#UsedClientPayoutFXRate").val(usedClientPayoutFXRate.toFixed(4));
+        }
+    };
+
+    function updateUsedAmount() {
+        var usedClientPayoutFXRate = $("#UsedClientPayoutFXRate").val();
+        var clientPayoutAmount = $("#ClientPayoutAmount").val();
+         
+        var usedAmount = clientPayoutAmount * usedClientPayoutFXRate;
+        $("#UsedAmount").val(usedAmount.toFixed(4));
+         
+    };
+
+    $(document).ready(function () {
+        $('#TxnID').on('change', function () {
+            getTxn();
+        }); 
+        $('#UsedAmount').on('input', function () {
+            updateUsedClientPayoutFXRate();
+        });
+        $('#UsedClientPayoutFXRate').on('input', function () {
+            updateUsedAmount();
+        });
+        $('#ClientPayoutAmount').on('input', function () {
+            updateUsedAmount();
+        });
+    });
+
+</script>
+
+<h1>Create</h1>
+
+<h4>Payout</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group row">
+                <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
+                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="TxnID" class="col-md-6 col-form-label"></label>
+                @*<input asp-for="TxnID" class="form-control" />*@
+                @Html.DropDownList("TxnID", ViewBag.Txn as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="TxnID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ClientPayoutCurrencyID" class="col-md-6 col-form-label"></label>
+                <input id="ClientPayoutCurrencyName" class="col-md-6 form-control" readonly />
+                @*@Html.DropDownList("ClientPayoutCurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })*@
+                <span asp-validation-for="ClientPayoutCurrencyID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ClientPayoutAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="ClientPayoutAmount" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="ClientPayoutAmount" class="text-danger"></span>
+            </div>
+            @*<div class="form-group row">
+            <label asp-for="ClientPayoutUSDRate" class="col-md-6 col-form-label"></label>
+            <input asp-for="ClientPayoutUSDRate" class="col-md-6 form-control" value=""/>
+            <span asp-validation-for="ClientPayoutUSDRate" class="text-danger"></span>
+        </div>*@
+            <div class="form-group row">
+                <label asp-for="ProviderPayinCurrencyID" class="col-md-6 col-form-label"></label>
+                <input id="ProviderPayinCurrencyName" class="col-md-6 form-control" readonly />
+                @*@Html.DropDownList("ProviderPayinCurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })*@
+                <span asp-validation-for="ProviderPayinCurrencyID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ProviderPayinAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderPayinAmount" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ProviderPayinAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="ProviderPayinUSDRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ProviderPayinUSDRate" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="ProviderPayinUSDRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UsedCurrencyID" class="col-md-6 col-form-label"></label>
+                @*<input asp-for="UsedCurrencyID" class="form-control" />*@
+                @Html.DropDownList("UsedCurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="UsedCurrencyID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UsedAmount" class="col-md-6 col-form-label"></label>
+                <input asp-for="UsedAmount" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="UsedAmount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UsedClientPayoutFXRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="UsedClientPayoutFXRate" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="UsedClientPayoutFXRate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="UsedUSDRate" class="col-md-6 col-form-label"></label>
+                <input asp-for="UsedUSDRate" class="col-md-6 form-control" value="" />
+                <span asp-validation-for="UsedUSDRate" class="text-danger"></span>
+            </div> 
+            <div class="form-group row">
+                <label asp-for="AccountBankAccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("AccountBankAccountID", ViewBag.AccountBankAccount as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="AccountBankAccountID" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+            <label asp-for="DateTimeModified" class="control-label"></label>
+            <input asp-for="DateTimeModified" class="form-control" />
+            <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="DateTimeAdded" class="control-label"></label>
+            <input asp-for="DateTimeAdded" class="form-control" />
+            <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

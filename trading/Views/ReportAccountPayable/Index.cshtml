@@ -1,0 +1,58 @@
+﻿@model IEnumerable<trading.Models.ReportAccountPayable>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Account Payable</h1>
+ 
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientTradingProfileName)
+            </th> 
+            <th>
+                @Html.DisplayNameFor(model => model.TradeDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientAmountUncompleted)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientCurrencyNameOut)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientAmountUncompletedUSD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rate)
+            </th> 
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientTradingProfileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TradeDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientAmountUncompleted)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientCurrencyNameOut)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ClientAmountUncompletedUSD)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rate)
+            </td>
+        </tr>
+        }
+    </tbody>
+</table>

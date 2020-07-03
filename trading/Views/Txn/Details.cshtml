@@ -1,0 +1,176 @@
+﻿@model trading.Models.TxnView
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div> 
+    @if (Model.Type == "D")
+    {
+        <h4>Deposit</h4>
+    }
+    else if (Model.Type == "L")
+    {
+        <h4>LQuote</h4>
+    }
+    else if (Model.Type == "Q")
+    {
+        <h4>Quote</h4>
+    }
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ReferenceNo)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ReferenceNo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "Q" || Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.LinkedDepositReferenceNo)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "Q" || Model.Type == "D")">
+            @Html.DisplayFor(model => model.LinkedDepositReferenceNo)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientTradingProfileName)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientTradingProfileName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientDfrRate)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientDfrRate)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientUniqueDfr)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @(Model.ClientUniqueDfr ? "Y" : "N")
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.TradeDate)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.TradeDate)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientPriceRate)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientPriceRate)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientCurrencyPairName)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientCurrencyPairName)
+        </dd>
+
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientExRate)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientExRate)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientCurrencyNameIn)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientCurrencyNameIn)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ClientAmountIn)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ClientAmountIn)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientCurrencyNameOut)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientCurrencyNameOut)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientAmountOut)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientAmountOut)
+        </dd>
+        @*<dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.ClientPayOutAccountName)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @Html.DisplayFor(model => model.ClientPayOutAccountName)
+        </dd>*@
+        <dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderTradingProfileName)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderTradingProfileName)
+        </dd>
+        @*<dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderCurrencyName)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderCurrencyName)
+        </dd>*@
+        <dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderCostDate)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderCostDate)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderCostRate)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderCostRate)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderExpectedPayInAmount)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderExpectedPayInAmount)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "L")">
+            @Html.DisplayNameFor(model => model.ProviderBankAccountName)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "L")">
+            @Html.DisplayFor(model => model.ProviderBankAccountName)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeModified)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeModified)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+</div>
+
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>

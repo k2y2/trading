@@ -1,0 +1,56 @@
+﻿@model IEnumerable<trading.Models.ReportProvider>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Provider Slip</h1>
+ 
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.ProviderTradingProfileName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.MissingSlipAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalProviderExpectedPayInAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSlipAmount)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalActualAmount)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProviderTradingProfileName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.MissingSlipAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalProviderExpectedPayInAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalSlipAmount)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalActualAmount)
+            </td>
+            @*<td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>*@
+        </tr>
+}
+    </tbody>
+</table>

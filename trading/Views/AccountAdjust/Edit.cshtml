@@ -1,0 +1,60 @@
+﻿@model trading.Models.AccountAdjust
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Adjust</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="id" />
+            <div class="form-group row">
+                <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
+                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
+                <span asp-validation-for="ReferenceNo" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="AccountBankAccountID" class="col-md-6 col-form-label"></label>
+                @Html.DropDownList("AccountBankAccountID", ViewBag.AccountBankAccount as SelectList, "", new { @class = "col-md-6 form-control" })
+                <span asp-validation-for="AccountBankAccountID" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Amount" class="col-md-6 col-form-label"></label>
+                <input asp-for="Amount" class="col-md-6 form-control" />
+                <span asp-validation-for="Amount" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Reference" class="col-md-6 col-form-label"></label>
+                <input asp-for="Reference" class="col-md-6 form-control" />
+                <span asp-validation-for="Reference" class="text-danger"></span>
+            </div>
+            @*<div class="form-group">
+                <label asp-for="DateTimeModified" class="control-label"></label>
+                <input asp-for="DateTimeModified" class="form-control" />
+                <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+            </div>*@
+            <div class="form-group" hidden>
+                <label asp-for="DateTimeAdded" class="control-label"></label>
+                <input asp-for="DateTimeAdded" class="form-control" />
+                <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

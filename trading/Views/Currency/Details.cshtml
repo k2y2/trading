@@ -1,0 +1,37 @@
+﻿@model trading.Models.Currency
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Currency</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.CurrencyName)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.CurrencyName)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeModified)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeModified)
+        </dd>
+        <dt class = "col-sm-3">
+            @Html.DisplayNameFor(model => model.DateTimeAdded)
+        </dt>
+        <dd class = "col-sm-9">
+            @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
