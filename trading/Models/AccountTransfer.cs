@@ -27,6 +27,10 @@ namespace trading.Models
         [Display(Name = "Rate")]
         public decimal Rate { get; set; }
 
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        [Display(Name = "Actual Date")]
+        public DateTime? ActualDate { get; set; }
+
         [Display(Name = "Reference")]
         public string Reference { get; set; }
 
@@ -55,6 +59,10 @@ namespace trading.Models
 
         [Display(Name = "Rate")]
         public decimal Rate { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        [Display(Name = "Actual Date")]
+        public DateTime? ActualDate { get; set; }
 
         [Display(Name = "Reference")]
         public string Reference { get; set; }

@@ -46,9 +46,9 @@
         $('#Update').on('click', function () {
             updateDfr();
         });
-        $('#UpdateTest').on('click', function () {
-            updateDfrTest();
-        });
+        //$('#UpdateTest').on('click', function () {
+        //    updateDfrTest();
+        //});
     });
 
 </script>
@@ -65,7 +65,7 @@
             <input type="date" name="dateFilter" value="@ViewBag.dateFilter" />
             <input type="submit" value="Search" class="btn btn-default" />
             <input id="Update" type="button" value="Update" class="btn btn-default" />
-            <input id="UpdateTest" type="button" value="UpdateTest" class="btn btn-default" />
+            @*<input id="UpdateTest" type="button" value="UpdateTest" class="btn btn-default" />*@
             @*<a asp-action="Index">Back to Full List</a>*@
         </p>
     </div>

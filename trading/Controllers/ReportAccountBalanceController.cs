@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,7 +22,10 @@ namespace trading.Controllers
         // GET: ReportAccountBalance
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ReportAccountBalance.ToListAsync());
+            if (HttpContext.Session.GetString("Role") == "S")
+                return View(await _context.ReportAccountBalance.ToListAsync());
+
+            return RedirectToAction("Logout", "Home"); 
         }
 
         // GET: ReportAccountBalance/Details/5

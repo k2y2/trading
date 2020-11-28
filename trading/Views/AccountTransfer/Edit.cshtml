@@ -16,7 +16,7 @@
             <input type="hidden" asp-for="id" />
             <div class="form-group row">
                 <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
-                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly/>
+                <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
                 <span asp-validation-for="ReferenceNo" class="text-danger"></span>
             </div>
             <div class="form-group row">
@@ -40,15 +40,20 @@
                 <span asp-validation-for="Rate" class="text-danger"></span>
             </div>
             <div class="form-group row">
+                <label asp-for="ActualDate" class="col-md-6 col-form-label"></label>
+                <input asp-for="ActualDate" type="date" class="col-md-6 form-control" />
+                <span asp-validation-for="ActualDate" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
                 <label asp-for="Reference" class="col-md-6 col-form-label"></label>
                 <input asp-for="Reference" class="col-md-6 form-control" />
                 <span asp-validation-for="Reference" class="text-danger"></span>
             </div>
             @*<div class="form-group">
-                <label asp-for="DateTimeModified" class="control-label"></label>
-                <input asp-for="DateTimeModified" class="form-control" />
-                <span asp-validation-for="DateTimeModified" class="text-danger"></span>
-            </div>*@
+            <label asp-for="DateTimeModified" class="control-label"></label>
+            <input asp-for="DateTimeModified" class="form-control" />
+            <span asp-validation-for="DateTimeModified" class="text-danger"></span>
+        </div>*@
             <div class="form-group" hidden>
                 <label asp-for="DateTimeAdded" class="control-label"></label>
                 <input asp-for="DateTimeAdded" class="form-control" />

@@ -34,15 +34,28 @@ namespace trading.Models
         [Display(Name = "Trade Date")]
         public DateTime TradeDate { get; set; }
 
+        public int ClientID { get; set; }
+
         public int ClientTradingProfileID { get; set; }
 
         [Display(Name = "Client Trading Profile")]
         public string ClientTradingProfileName { get; set; }
          
         public int ProviderTradingProfileID { get; set; }
-
+         
         [Display(Name = "Provider Trading Profile")]
         public string ProviderTradingProfileName { get; set; }
+
+        public byte ClientCurrencyIDIn { get; set; }
+
+        [Display(Name = "Client Payin Currency")]
+        public string ClientCurrencyNameIn { get; set; }
+
+        [Display(Name = "Client Payin Amount")]
+        [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
+        public decimal? ClientAmountIn { get; set; }
+
+        public byte ClientCurrencyIDOut { get; set; }
 
         [Display(Name = "Client Payout Currency")]
         public string ClientCurrencyNameOut { get; set; }
@@ -58,5 +71,7 @@ namespace trading.Models
         [Display(Name = "Gross Profit USD (%)")]
         [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
         public decimal? GrossProfitUSDPct { get; set; }
+
+        public string Role { get; set; }
     }
 }

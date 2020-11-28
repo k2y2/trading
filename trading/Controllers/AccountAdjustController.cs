@@ -58,7 +58,7 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,ReferenceNo,AccountBankAccountID,Amount,Reference,DateTimeModified,DateTimeAdded")] AccountAdjust accountAdjust)
+        public async Task<IActionResult> Create([Bind("id,ReferenceNo,AccountBankAccountID,Amount,ActualDate,Reference,DateTimeModified,DateTimeAdded")] AccountAdjust accountAdjust)
         {
             if (ModelState.IsValid)
             {
@@ -115,7 +115,7 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,AccountBankAccountID,Amount,Reference,DateTimeModified,DateTimeAdded")] AccountAdjust accountAdjust)
+        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,AccountBankAccountID,Amount,ActualDate,Reference,DateTimeModified,DateTimeAdded")] AccountAdjust accountAdjust)
         {
             if (id != accountAdjust.id)
             {

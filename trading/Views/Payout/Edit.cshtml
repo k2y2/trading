@@ -8,7 +8,86 @@
 <script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
+
+    function updateTxn() {
+
+        if ($("#ClientTradingProfileID").val() == "")
+            reset();
+
+        var obj = {
+            clientTradingProfileID: $("#ClientTradingProfileID").val()
+        };
+
+        $.ajax({
+            url: "/Payout/UpdateTxn",
+            type: 'GET',
+            data: obj,
+            success: function (response) {
+                $('#TxnID').empty();
+                $('#TxnID').append('<option value=""></option > ');
+                //var r = JSON.parse(response);
+                var r = response;
+                //debugger;
+                for (var i = 0; i < r.length; i++)
+                    $('#TxnID').append('<option value=' + r[i].value + '>' + r[i].text + '</option > ');
+
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
     function getTxn() {
+
+        var obj = {
+            txnID: $("#TxnID").val()
+        };
+
+        $.ajax({
+            url: "/Payout/GetTxn",
+            type: 'GET',
+            data: obj,
+            success: function (response) {
+                if (response == "null") {
+                    //debugger;
+                    $("#ClientTradingProfileID").val("");
+                    updateTxn();
+                    reset();
+                }
+                else {
+                    var r = JSON.parse(response);
+                    var clientPayoutCurrencyName = r["ClientCurrencyNameOut"];
+                    $("#ClientPayoutCurrencyName").val(clientPayoutCurrencyName);
+                    updateExpectedCurrencyPair();
+
+                    var clientAmountOut = r["ClientAmountOut"];
+                    $("#ClientAmountOut").text(clientAmountOut);
+
+                    var clientPayoutAmountOutstanding = r["ClientPayoutAmountOutstanding"];
+                    $("#ClientPayoutAmount").val(clientPayoutAmountOutstanding);
+                    updateUsedAmount();
+
+                    var providerTradingProfileName = r["ProviderTradingProfileName"];
+                    $("#ProviderTradingProfileName").text(providerTradingProfileName);
+
+                    var providerPayinCurrencyName = r["LinkedProviderCurrencyName"];
+                    $("#ProviderPayinCurrencyName").val(providerPayinCurrencyName);
+
+                    var providerPayinAmount = r["LinkedProviderExpectedPayInAmount"];
+                    $("#ProviderPayinAmount").val(providerPayinAmount);
+
+                    var clientTradingProfileID = r["ClientTradingProfileID"];
+                    $("#ClientTradingProfileID").val(clientTradingProfileID);
+                }
+            },
+            error: function (response) {
+                //console.log("error");
+            }
+        });
+    };
+
+    function updateReadOnly() {
 
         var obj = {
             txnID: $("#TxnID").val()
@@ -22,10 +101,13 @@
                 var r = JSON.parse(response);
                 var clientPayoutCurrencyName = r["ClientCurrencyNameOut"];
                 $("#ClientPayoutCurrencyName").val(clientPayoutCurrencyName);
+                updateExpectedCurrencyPair();
 
-                var clientPayoutAmount = r["ClientAmountOut"];
-                $("#ClientPayoutAmount").val(clientPayoutAmount);
-                updateUsedAmount();
+                var clientAmountOut = r["ClientAmountOut"];
+                $("#ClientAmountOut").text(clientAmountOut);
+                 
+                var providerTradingProfileName = r["ProviderTradingProfileName"];
+                $("#ProviderTradingProfileName").text(providerTradingProfileName);
 
                 var providerPayinCurrencyName = r["LinkedProviderCurrencyName"];
                 $("#ProviderPayinCurrencyName").val(providerPayinCurrencyName);
@@ -33,7 +115,8 @@
                 var providerPayinAmount = r["LinkedProviderExpectedPayInAmount"];
                 $("#ProviderPayinAmount").val(providerPayinAmount);
 
-                //updateClientExRate();
+                var clientTradingProfileID = r["ClientTradingProfileID"];
+                $("#ClientTradingProfileID").val(clientTradingProfileID);
             },
             error: function (response) {
                 //console.log("error");
@@ -41,12 +124,27 @@
         });
     };
 
+    function reset() {
+        $("#ClientPayoutCurrencyName").val("");
+        $("#lblExpectedCurrencyPair_UsedClientPayoutFXRate").text("");
+
+        $("#ClientAmountOut").text("");
+
+        $("#ClientPayoutAmount").val("");
+        updateUsedAmount();
+
+        $("#ProviderTradingProfileName").text("");
+        $("#ProviderPayinCurrencyName").val("");
+
+        $("#ProviderPayinAmount").val("");
+    };
+
     function updateUsedClientPayoutFXRate() {
         var usedAmount = $("#UsedAmount").val();
         var clientPayoutAmount = $("#ClientPayoutAmount").val();
         if (clientPayoutAmount > 0) {
             var usedClientPayoutFXRate = usedAmount / clientPayoutAmount;
-            $("#UsedClientPayoutFXRate").val(usedClientPayoutFXRate.toFixed(4));
+            $("#UsedClientPayoutFXRate").val(usedClientPayoutFXRate.toFixed(7));
         }
     };
 
@@ -59,12 +157,29 @@
 
     };
 
-    $(document).ready(function () {
-        getTxn();
+    function updateExpectedCurrencyPair() {
+        var usedCurrency = $("#UsedCurrencyID option:selected").text();
+        var clientPayoutCurrency = $("#ClientPayoutCurrencyName").val();
 
+        if (usedCurrency != "" && clientPayoutCurrency != "")
+            $("#lblExpectedCurrencyPair_UsedClientPayoutFXRate").text($.trim(clientPayoutCurrency) + usedCurrency);
+
+        if (usedCurrency != "")
+            $("#lblExpectedCurrencyPair_UsedUSDRate").text("USD" + usedCurrency);
+    }; 
+
+    $(document).ready(function () {
+        updateReadOnly();
+
+        $('#ClientTradingProfileID').on('change', function () {
+            updateTxn();
+        }); 
         $('#TxnID').on('change', function () {
             getTxn();
-        });
+        }); 
+        $('#UsedCurrencyID').on('change', function () {
+            updateExpectedCurrencyPair();
+        });      
         $('#UsedAmount').on('input', function () {
             updateUsedClientPayoutFXRate();
         });
@@ -93,6 +208,10 @@
                 <span asp-validation-for="ReferenceNo" class="text-danger"></span>
             </div>
             <div class="form-group row">
+                <label class="col-md-6 col-form-label">Client Trading Profile</label>
+                @Html.DropDownList("ClientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
+            </div>
+            <div class="form-group row">
                 <label asp-for="TxnID" class="col-md-6 col-form-label"></label>
                 @*<input asp-for="TxnID" class="form-control" />*@
                 @Html.DropDownList("TxnID", ViewBag.Txn as SelectList, "", new { @class = "col-md-6 form-control" })
@@ -105,6 +224,10 @@
                 <span asp-validation-for="ClientPayoutCurrencyID" class="text-danger"></span>
             </div>
             <div class="form-group row">
+                <label class="col-md-6 col-form-label">Client Amount Out</label>
+                <label id="ClientAmountOut" class="col-md-6 col-form-label" />
+            </div>
+            <div class="form-group row">
                 <label asp-for="ClientPayoutAmount" class="col-md-6 col-form-label"></label>
                 <input asp-for="ClientPayoutAmount" class="col-md-6 form-control" />
                 <span asp-validation-for="ClientPayoutAmount" class="text-danger"></span>
@@ -114,6 +237,10 @@
             <input asp-for="ClientPayoutUSDRate" class="col-md-6 form-control" />
             <span asp-validation-for="ClientPayoutUSDRate" class="text-danger"></span>
         </div>*@
+            <div class="form-group row">
+                <label class="col-md-6 col-form-label">Provider Trading Profile</label>
+                <label id="ProviderTradingProfileName" class="col-md-6 col-form-label" />
+            </div>
             <div class="form-group row">
                 <label asp-for="ProviderPayinCurrencyID" class="col-md-6 col-form-label"></label>
                 <input id="ProviderPayinCurrencyName" class="col-md-6 form-control" readonly />
@@ -142,15 +269,23 @@
                 <span asp-validation-for="UsedAmount" class="text-danger"></span>
             </div>
             <div class="form-group row">
+                <label class="col-md-6 col-form-label">Expected Currency Pair</label>
+                <label id="lblExpectedCurrencyPair_UsedClientPayoutFXRate" class="col-md-6 col-form-label"></label>
+            </div>
+            <div class="form-group row">
                 <label asp-for="UsedClientPayoutFXRate" class="col-md-6 col-form-label"></label>
                 <input asp-for="UsedClientPayoutFXRate" class="col-md-6 form-control" />
                 <span asp-validation-for="UsedClientPayoutFXRate" class="text-danger"></span>
             </div>
             <div class="form-group row">
+                <label class="col-md-6 col-form-label">Expected Currency Pair</label>
+                <label id="lblExpectedCurrencyPair_UsedUSDRate" class="col-md-6 col-form-label"></label>
+            </div>
+            <div class="form-group row">
                 <label asp-for="UsedUSDRate" class="col-md-6 col-form-label"></label>
                 <input asp-for="UsedUSDRate" class="col-md-6 form-control" />
                 <span asp-validation-for="UsedUSDRate" class="text-danger"></span>
-            </div> 
+            </div>
             <div class="form-group row">
                 <label asp-for="AccountBankAccountID" class="col-md-6 col-form-label"></label>
                 @Html.DropDownList("AccountBankAccountID", ViewBag.AccountBankAccount as SelectList, "", new { @class = "col-md-6 form-control" })

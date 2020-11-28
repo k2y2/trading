@@ -58,7 +58,7 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,ReferenceNo,AccountBankAccountIDFrom,AccountBankAccountIDTo,Amount,Rate,Reference,DateTimeModified,DateTimeAdded")] AccountTransfer accountTransfer)
+        public async Task<IActionResult> Create([Bind("id,ReferenceNo,AccountBankAccountIDFrom,AccountBankAccountIDTo,Amount,Rate,ActualDate,Reference,DateTimeModified,DateTimeAdded")] AccountTransfer accountTransfer)
         {
             if (ModelState.IsValid)
             {
@@ -121,7 +121,7 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,AccountBankAccountIDFrom,AccountBankAccountIDTo,Amount,Rate,Reference,DateTimeModified,DateTimeAdded")] AccountTransfer accountTransfer)
+        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,AccountBankAccountIDFrom,AccountBankAccountIDTo,Amount,Rate,ActualDate,Reference,DateTimeModified,DateTimeAdded")] AccountTransfer accountTransfer)
         {
             if (id != accountTransfer.id)
             {

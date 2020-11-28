@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -21,13 +22,37 @@ namespace trading.Controllers
         }
 
         // GET: Txn
-        public async Task<IActionResult> Index(int clientTradingProfileID, int providerTradingProfileID, DateTime dateFilterStart, DateTime dateFilterEnd)
+        public async Task<IActionResult> Index(int clientID, int clientTradingProfileID, int providerTradingProfileID, DateTime dateFilterStart, DateTime dateFilterEnd, byte clientCurrencyIDIn, byte clientCurrencyIDOut, string status, string payoutDone)
         {
+            ViewBag.Client = new SelectList(_context.Client.ToList()
+                      .OrderBy(m => m.ClientName), "id", "ClientName", clientID);
+
             ViewBag.ClientTradingProfile = new SelectList(_context.ClientTradingProfile.ToList()
                       .OrderBy(m => m.ClientTradingProfileName), "id", "ClientTradingProfileName", clientTradingProfileID);
 
             ViewBag.ProviderTradingProfile = new SelectList(_context.ProviderTradingProfile.ToList()
                       .OrderBy(m => m.ProviderTradingProfileName), "id", "ProviderTradingProfileName", providerTradingProfileID);
+
+            ViewBag.ClientCurrencyIn = new SelectList(_context.Currency.ToList()
+                      .OrderBy(m => m.CurrencyName), "id", "CurrencyName", clientCurrencyIDIn);
+
+            ViewBag.ClientCurrencyOut = new SelectList(_context.Currency.ToList()
+                      .OrderBy(m => m.CurrencyName), "id", "CurrencyName", clientCurrencyIDOut);
+
+            ViewBag.Status = new SelectList(
+                new List<SelectListItem>
+                {
+                    new SelectListItem {Text = "No Payout", Value = "N"},
+                    new SelectListItem {Text = "Partially Completed", Value = "P"},
+                    new SelectListItem {Text = "Completed", Value = "C"},
+                }, "Value", "Text", status);
+
+            ViewBag.PayoutDone = new SelectList(
+                new List<SelectListItem>
+                {
+                    new SelectListItem {Text = "Y", Value = "Y"},
+                    new SelectListItem {Text = "N", Value = "N"},
+                }, "Value", "Text", payoutDone); 
 
             //date range
             if (dateFilterStart == DateTime.MinValue) dateFilterStart = new DateTime(Utility.GetLocalDateTime().Date.Year, Utility.GetLocalDateTime().Date.Month, 1); ;
@@ -36,12 +61,27 @@ namespace trading.Controllers
             ViewBag.dateFilterStart = dateFilterStart.ToString("yyyy-MM-dd");
             ViewBag.dateFilterEnd = dateFilterEnd.ToString("yyyy-MM-dd");
 
-            return View(await _context.TxnView
-                .Where(x => x.TradeDate >= dateFilterStart && 
+            var txn = _context.TxnView
+                .Where(x => x.TradeDate >= dateFilterStart &&
                             x.TradeDate <= dateFilterEnd &&
+                            (clientID == 0 || x.ClientID == clientID) &&
                             (clientTradingProfileID == 0 || x.ClientTradingProfileID == clientTradingProfileID) &&
-                            (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID))
-                .OrderByDescending(x=>x.TradeDate).ToListAsync());
+                            (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID) &&
+                            (clientCurrencyIDIn == 0 || x.ClientCurrencyIDIn == clientCurrencyIDIn) &&
+                            (clientCurrencyIDOut == 0 || x.ClientCurrencyIDOut == clientCurrencyIDOut) &&
+                            (status == null || (x.Status == null || x.Status == "" ? "N" : x.Status) == status) &&
+                            (payoutDone == null || (x.PayoutDone ? "Y" : "N") == payoutDone));
+
+            decimal? clientAmountInTotal = txn.Sum(x => x.ClientAmountIn);
+            ViewBag.ClientAmountInTotal = String.Format("{0:0,0.0000}", clientAmountInTotal);
+
+            decimal? clientAmountOutTotal = txn.Sum(x => x.ClientAmountOut);
+            ViewBag.ClientAmountOutTotal = String.Format("{0:0,0.0000}", clientAmountOutTotal);
+
+            decimal? providerExpectedPayInAmountTotal = txn.Sum(x => x.ProviderExpectedPayInAmount);
+            ViewBag.ProviderExpectedPayInAmountTotal = String.Format("{0:0,0.0000}", providerExpectedPayInAmountTotal);
+
+            return View(await txn.OrderByDescending(x=>x.TradeDate).ToListAsync());
         }
 
         // GET: Txn/Details/5
@@ -96,9 +136,17 @@ namespace trading.Controllers
             var currencyPairView = _context.CurrencyPairView.Where(m => m.id== clientCurrencyPairID).FirstOrDefault();
             if (currencyPairView != null) currencyPairID2 = currencyPairView.CurrencyPairID2;
 
-            var dfr = _context.Dfr.Where(m => m.TradeDate == tradeDate && m.CurrencyPairID == currencyPairID2).FirstOrDefault();
+            var dfr = _context.DfrView.Where(m => m.TradeDate == tradeDate && m.CurrencyPairID == currencyPairID2).FirstOrDefault();
              
             return Json(JsonConvert.SerializeObject(dfr)); 
+        }
+
+        [HttpGet]
+        public JsonResult GetReciprocalCurrencyPair(short clientCurrencyPairID)
+        { 
+            var currencyPairView = _context.CurrencyPairView.Where(m => m.id == clientCurrencyPairID).FirstOrDefault();
+             
+            return Json(JsonConvert.SerializeObject(currencyPairView));
         }
 
         [HttpGet]
@@ -107,6 +155,47 @@ namespace trading.Controllers
             var costRate = _context.CostRate.Where(m => m.TradeDate == providerCostDate && m.ProviderTradingProfileID == providerTradingProfileID).FirstOrDefault();
 
             return Json(JsonConvert.SerializeObject(costRate));
+        }
+
+        [HttpPost]
+        public ActionResult UpdatePayoutDone(int id, bool isPayoutDone)
+        {
+            var payoutDoneByID = HttpContext.Session.GetInt32("UserID");
+            var payoutDoneByName = isPayoutDone ? HttpContext.Session.GetString("UserName"):"";
+
+            var txn = _context.Txn.Where(m => m.id == id).FirstOrDefault();
+            txn.PayoutDone = isPayoutDone;
+
+            if (isPayoutDone)
+                txn.PayoutDoneByID = payoutDoneByID;
+            else
+                txn.PayoutDoneByID = null;
+
+            _context.Update(txn);
+            _context.SaveChanges(); 
+
+            //return Json(JsonConvert.SerializeObject(payoutDoneByID));
+            return Content(payoutDoneByName);
+        }
+
+        [HttpPost]
+        public void UpdateMiniAccount(int id, bool isMiniAccount)
+        {  
+            var txn = _context.Txn.Where(m => m.id == id).FirstOrDefault();
+            txn.MiniAccount = isMiniAccount;
+              
+            _context.Update(txn);
+            _context.SaveChanges(); 
+        }
+
+        [HttpPost]
+        public void UpdateOvernightDeposit(int id, bool isOvernightDeposit)
+        { 
+            var txn = _context.Txn.Where(m => m.id == id).FirstOrDefault();
+            txn.OvernightDeposit = isOvernightDeposit;
+             
+            _context.Update(txn);
+            _context.SaveChanges(); 
         }
 
         // GET: Txn/CreateDeposit
@@ -188,12 +277,15 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("id,ReferenceNo,Type,LinkedDepositID,TradeDate,ClientTradingProfileID,Status,ClientPriceRate,ClientCurrencyPairID,ClientDfrRate,ClientUniqueDfr,ClientExRate,ClientCurrencyIDIn,ClientAmountIn,ClientCurrencyIDOut,ClientAmountOut,ClientPayOutAccountID,ProviderTradingProfileID,ProviderCurrencyID,ProviderCostDate,ProviderCostRate,ProviderExpectedPayInAmount,ProviderBankAccountID,DateTimeModified,DateTimeAdded")] Txn txn)
+        public async Task<IActionResult> Create([Bind("id,ReferenceNo,Type,LinkedDepositID,TradeDate,ClientTradingProfileID,Status,ClientPriceRate,ClientCurrencyPairID,ClientDfrRate,ClientUniqueDfr,ClientExRate,ClientCurrencyIDIn,ClientAmountIn,ClientCurrencyIDOut,ClientAmountOut,ClientPayOutAccountID,ProviderTradingProfileID,ProviderCurrencyID,ProviderCostDate,ProviderCostRate,ProviderExpectedPayInAmount,ProviderBankAccountID,Remark,PayoutDone,PayoutDoneByID,MiniAccount,OvernightDeposit,DateTimeModified,ModifiedByID,DateTimeAdded,AddedByID")] Txn txn)
         {
             if (ModelState.IsValid)
             {
                 txn.DateTimeModified = Utility.GetLocalDateTime();
                 txn.DateTimeAdded = Utility.GetLocalDateTime();
+                txn.ModifiedByID = HttpContext.Session.GetInt32("UserID");
+                txn.AddedByID = HttpContext.Session.GetInt32("UserID");
+                if (txn.PayoutDone) txn.PayoutDoneByID = HttpContext.Session.GetInt32("UserID");
                 _context.Add(txn);
 
                 if (txn.Type == "L")
@@ -258,7 +350,7 @@ namespace trading.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,Type,LinkedDepositID,TradeDate,ClientTradingProfileID,Status,ClientPriceRate,ClientCurrencyPairID,ClientDfrRate,ClientUniqueDfr,ClientExRate,ClientCurrencyIDIn,ClientAmountIn,ClientCurrencyIDOut,ClientAmountOut,ClientPayOutAccountID,ProviderTradingProfileID,ProviderCurrencyID,ProviderCostDate,ProviderCostRate,ProviderExpectedPayInAmount,ProviderBankAccountID,DateTimeModified,DateTimeAdded")] Txn txn)
+        public async Task<IActionResult> Edit(int id, [Bind("id,ReferenceNo,Type,LinkedDepositID,TradeDate,ClientTradingProfileID,Status,ClientPriceRate,ClientCurrencyPairID,ClientDfrRate,ClientUniqueDfr,ClientExRate,ClientCurrencyIDIn,ClientAmountIn,ClientCurrencyIDOut,ClientAmountOut,ClientPayOutAccountID,ProviderTradingProfileID,ProviderCurrencyID,ProviderCostDate,ProviderCostRate,ProviderExpectedPayInAmount,ProviderBankAccountID,Remark,PayoutDone,PayoutDoneByID,MiniAccount,OvernightDeposit,DateTimeModified,ModifiedByID,DateTimeAdded,AddedByID")] Txn txn)
         {
             if (id != txn.id)
             {
@@ -288,13 +380,22 @@ namespace trading.Controllers
                     }
 
                     txn.DateTimeModified = Utility.GetLocalDateTime();
+                    txn.ModifiedByID = HttpContext.Session.GetInt32("UserID");
+
+                    if (!txn.PayoutDone) 
+                        txn.PayoutDoneByID = null;
+                    else if (txn.PayoutDoneByID == null)
+                        txn.PayoutDoneByID = HttpContext.Session.GetInt32("UserID");
+
                     _context.Update(txn);
                     await _context.SaveChangesAsync();
 
                     //check ClientPayoutMissing, update Status
-                    var reportTxn = await _context.ReportTxn.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == txn.id);
-                    if (reportTxn == null || reportTxn.ClientPayoutMissing > 0)
+                    var reportTxn = await _context.ReportTxnOriginal.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == txn.id);
+                    if (reportTxn == null || reportTxn.ClientPayoutMissing >= reportTxn.ClientAmountOut)
                         txn.Status = "";
+                    else if (reportTxn.ClientPayoutMissing > 0)
+                        txn.Status = "P";
                     else
                         txn.Status = "C";
 

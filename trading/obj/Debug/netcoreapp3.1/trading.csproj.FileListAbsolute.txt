@@ -1,6 +1,5 @@
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\appsettings.Development.json
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\appsettings.json
-C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Properties\launchSettings.json
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\trading.exe
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\trading.deps.json
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\trading.runtimeconfig.json
@@ -128,7 +127,6 @@ C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.A
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Buffers.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Collections.Concurrent.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Collections.dll
-C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Collections.Immutable.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Collections.NonGeneric.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Collections.Specialized.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.ComponentModel.Annotations.dll
@@ -145,7 +143,6 @@ C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.D
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Data.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.Contracts.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.Debug.dll
-C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.DiagnosticSource.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.FileVersionInfo.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.Process.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Diagnostics.StackTrace.dll
@@ -598,3 +595,17 @@ C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.S
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Security.Permissions.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Security.Principal.Windows.dll
 C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\refs\System.Windows.Extensions.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.JsonWebTokens.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Logging.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Protocols.OpenIdConnect.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\Microsoft.IdentityModel.Tokens.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\System.Collections.Immutable.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\System.Diagnostics.DiagnosticSource.dll
+C:\Users\k2y2\source\repos\trading\trading\bin\Debug\netcoreapp3.1\System.IdentityModel.Tokens.Jwt.dll
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\Razor\Views\User\Create.cshtml.g.cs
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\Razor\Views\User\Delete.cshtml.g.cs
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\Razor\Views\User\Details.cshtml.g.cs
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\Razor\Views\User\Edit.cshtml.g.cs
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\Razor\Views\User\Index.cshtml.g.cs
+C:\Users\k2y2\source\repos\trading\trading\obj\Debug\netcoreapp3.1\scopedcss\bundle\trading.styles.css

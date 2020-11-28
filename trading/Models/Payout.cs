@@ -33,7 +33,7 @@ namespace trading.Models
         public decimal? ProviderPayinAmount { get; set; }
 
         [Display(Name = "USD Provider Payin Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal ProviderPayinUSDRate { get; set; }
 
         [Display(Name = "Used Currency")]
@@ -44,11 +44,11 @@ namespace trading.Models
         public decimal UsedAmount { get; set; }
 
         [Display(Name = "Client Payout Used Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal UsedClientPayoutFXRate { get; set; }
 
         [Display(Name = "USD Used Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal UsedUSDRate { get; set; }
         
         [Display(Name = "APA Bank Account")]
@@ -91,7 +91,7 @@ namespace trading.Models
         public decimal? ProviderPayinAmount { get; set; }
 
         [Display(Name = "Provider Payin USD Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal ProviderPayinUSDRate { get; set; }
 
         [Display(Name = "Used Currency")]
@@ -102,11 +102,11 @@ namespace trading.Models
         public decimal UsedAmount { get; set; }
 
         [Display(Name = "Used Client Payout FX Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal UsedClientPayoutFXRate { get; set; }
 
         [Display(Name = "Used USD Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal UsedUSDRate { get; set; }
 
         [Display(Name = "APA Bank Account")]

@@ -5,7 +5,9 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fafafa;
+    background: #f7f7f7;
+    
+     
 }
 
 p {
@@ -27,7 +29,7 @@ a:focus {
 .navbar {
     padding: 15px 10px;
     background: #fff;
-    border: none;
+    
     border-radius: 0;
     margin-bottom: 40px;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
@@ -56,15 +58,16 @@ a:focus {
 }
 
 #sidebar {
-    width: 250px;
+    width: 320px;
     position: fixed;
     top: 0;
     left: 0;
     height: 100vh;
     z-index: 999;
-    background: #7386D5;
-    color: #fff;
+    background: #f7f7f7;
+    color: #002052;
     transition: all 0.3s;
+    border-right: 5px solid #002052;
 }
 
 #sidebar.active {
@@ -72,8 +75,10 @@ a:focus {
 }
 
     #sidebar .sidebar-header {
-        padding: 20px;
-        background: #7386D5;
+        padding: 10px;
+        background: #f7f7f7; 
+        width: 200px;
+        resize:both;
     }
 
 #sidebar ul.components {
@@ -92,16 +97,16 @@ a:focus {
     display: block;
 }
 
-#sidebar ul li a:hover {
-    color: #7386D5;
-    background: #fff;
-}
+    #sidebar ul li a:hover {
+        color: #002052;
+        background: #5daae2;
+    }
 
-#sidebar ul li.active>a,
-a[aria-expanded="true"] {
-    color: #fff;
-    background: #6d7fcc;
-}
+    #sidebar ul li.active > a,
+    a[aria-expanded="true"] {
+        color: #002052;
+        background: #f7f7f7;
+    }
 
 a[data-toggle="collapse"] {
     position: relative;
@@ -118,7 +123,7 @@ a[data-toggle="collapse"] {
 ul ul a {
     font-size: 0.9em !important;
     padding-left: 30px !important;
-    background: #6d7fcc;
+    background: #f7f7f7;
 }
 
 ul.CTAs {
@@ -149,7 +154,7 @@ a.article:hover {
 ----------------------------------------------------- */
 
 #content {
-    width: calc(100% - 250px);
+    width: calc(100% - 320px);
     padding: 40px;
     min-height: 100vh;
     transition: all 0.3s;

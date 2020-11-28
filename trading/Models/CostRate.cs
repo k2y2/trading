@@ -20,7 +20,7 @@ namespace trading.Models
         public int ProviderTradingProfileID { get; set; }
 
         [Display(Name = "Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n6}", ApplyFormatInEditMode = true)]
         [Required(ErrorMessage = "Field required")]
         public decimal Rate { get; set; }
 
@@ -43,7 +43,7 @@ namespace trading.Models
         public int ProviderTradingProfileID { get; set; }
 
         [Display(Name = "Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n6}", ApplyFormatInEditMode = true)]
         public decimal Rate { get; set; }
 
         [Display(Name = "Modified")]

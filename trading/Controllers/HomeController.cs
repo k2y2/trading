@@ -45,7 +45,10 @@ namespace trading.Controllers
 
             if (user != null)
             {
+                HttpContext.Session.SetInt32("UserID", user.id);
                 HttpContext.Session.SetString("UserName", UserName);
+                HttpContext.Session.SetString("Role", user.Role);
+
                 return RedirectToAction("Index", "Txn"); 
             }
             else

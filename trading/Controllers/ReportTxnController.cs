@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,14 +24,22 @@ namespace trading.Controllers
         }
 
         // GET: ReportTxn
-        public async Task<IActionResult> Index(int clientTradingProfileID, int providerTradingProfileID, DateTime dateFilterStart, DateTime dateFilterEnd)
+        public async Task<IActionResult> Index(int clientID, int clientTradingProfileID, int providerTradingProfileID, int clientCurrencyIDIn, int clientCurrencyIDOut, DateTime dateFilterStart, DateTime dateFilterEnd)
         {
+            ViewBag.Client = new SelectList(_context.Client.ToList()
+                      .OrderBy(m => m.ClientName), "id", "ClientName", clientID);
+
             ViewBag.ClientTradingProfile = new SelectList(_context.ClientTradingProfile.ToList()
                       .OrderBy(m => m.ClientTradingProfileName), "id", "ClientTradingProfileName", clientTradingProfileID);
 
             ViewBag.ProviderTradingProfile = new SelectList(_context.ProviderTradingProfile.ToList()
                       .OrderBy(m => m.ProviderTradingProfileName), "id", "ProviderTradingProfileName", providerTradingProfileID);
 
+            ViewBag.ClientCurrencyIn = new SelectList(_context.Currency.ToList()
+                      .OrderBy(m => m.CurrencyName), "id", "CurrencyName", clientCurrencyIDIn);
+
+            ViewBag.ClientCurrencyOut = new SelectList(_context.Currency.ToList()
+                      .OrderBy(m => m.CurrencyName), "id", "CurrencyName", clientCurrencyIDOut);
             //date range
             if (dateFilterStart == DateTime.MinValue) dateFilterStart = new DateTime(Utility.GetLocalDateTime().Date.Year, Utility.GetLocalDateTime().Date.Month, 1); ;
             if (dateFilterEnd == DateTime.MinValue) dateFilterEnd = Utility.GetLocalDateTime().Date;
@@ -38,14 +47,34 @@ namespace trading.Controllers
             ViewBag.dateFilterStart = dateFilterStart.ToString("yyyy-MM-dd");
             ViewBag.dateFilterEnd = dateFilterEnd.ToString("yyyy-MM-dd");
 
-            var reportTxn =_context.ReportTxn.Where(x => x.TradeDate >= dateFilterStart && x.TradeDate <= dateFilterEnd &&
+            IQueryable<ReportTxn> reportTxn;
+            if (HttpContext.Session.GetString("Role") == "S")
+                reportTxn = _context.ReportTxn.Where(x => x.TradeDate >= dateFilterStart && x.TradeDate <= dateFilterEnd &&
+                            (clientID == 0 || x.ClientID == clientID) &&
                             (clientTradingProfileID == 0 || x.ClientTradingProfileID == clientTradingProfileID) &&
-                            (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID));
-            ViewBag.Total = String.Format("{0:0,0.00}", reportTxn.Sum(x => x.GrossProfitUSD));
+                            (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID) &&
+                            (clientCurrencyIDIn == 0 || x.ClientCurrencyIDIn == clientCurrencyIDIn) &&
+                            (clientCurrencyIDOut == 0 || x.ClientCurrencyIDOut == clientCurrencyIDOut) &&
+                            x.Role == "S");
+            else  
+                reportTxn = _context.ReportTxn.Where(x => x.TradeDate >= dateFilterStart && x.TradeDate <= dateFilterEnd &&
+                             (clientID == 0 || x.ClientID == clientID) &&
+                             (clientTradingProfileID == 0 || x.ClientTradingProfileID == clientTradingProfileID) &&
+                             (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID) &&
+                             (clientCurrencyIDIn == 0 || x.ClientCurrencyIDIn == clientCurrencyIDIn) &&
+                             (clientCurrencyIDOut == 0 || x.ClientCurrencyIDOut == clientCurrencyIDOut) &&
+                             x.Role == "A");
 
-            return View(await reportTxn
-                .OrderBy(x => x.ReferenceNo).ToListAsync());
-             
+            decimal? grossProfitUSDTotal = reportTxn.Sum(x => x.GrossProfitUSD);
+            ViewBag.GrossProfitUSDTotal = String.Format("{0:#,0.00}", grossProfitUSDTotal);
+
+            decimal? grossProfitUSDPctTotal = reportTxn.Sum(x => (x.GrossProfitUSD / grossProfitUSDTotal)*x.GrossProfitUSDPct);
+            ViewBag.GrossProfitUSDPctTotal = String.Format("{0:0.00}", grossProfitUSDPctTotal);
+
+            if (HttpContext.Session.GetString("Role") == "S" || HttpContext.Session.GetString("Role") == "A")
+                return View(await reportTxn.OrderBy(x => x.ReferenceNo).ToListAsync());
+              
+            return RedirectToAction("Logout", "Home"); 
         }
          
         public FileStreamResult GeneratePDF(DateTime dateFilterStart, DateTime dateFilterEnd)

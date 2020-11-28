@@ -73,6 +73,7 @@
 
                     updateClientDfr();
                     updateClientCurrency();
+                    updateExpectedCurrencyPair();
                 }
                 else {
                     //debugger;
@@ -103,10 +104,33 @@
                 //console.log(response);
                 //alert(response.Rate);
                 var r = JSON.parse(response);
-                var dfr = r["Rate"];
-                $("#ClientDfrRate").val(dfr);
+                var dfr = r["Rate"]; 
+                $("#ClientDfrRate").val(dfr);                  
+
                 updateClientExRate();
                 //alert(success);
+            },
+            error: function (response) {
+                //console.log("error"); 
+            }
+        });
+    };
+
+    function updateExpectedCurrencyPair() {
+
+        var obj = {
+            clientCurrencyPairID: $("#ClientCurrencyPairID").val()
+        };
+
+        $.ajax({
+            url: "/Txn/GetReciprocalCurrencyPair",
+            type: 'GET',
+            data: obj,
+            success: function (response) {
+                var r = JSON.parse(response);
+                var currencyPairName = r["CurrencyPairName2"];
+                $("#ExpectedCurrencyPair").text(currencyPairName);
+
             },
             error: function (response) {
                 //console.log("error"); 
@@ -142,7 +166,7 @@
         var dfr = $("#ClientDfrRate").val();
         var price = $("#ClientPriceRate").val();
         var exRate = (parseFloat(price)/100 + 1) * dfr;
-        $("#ClientExRate").val(exRate.toFixed(4));
+        $("#ClientExRate").val(exRate.toFixed(8));
         updateClientAmountOut();
     };
 
@@ -152,7 +176,7 @@
         
         if (ex > 0) {
             var amtOut = amtIn / ex;
-            $("#ClientAmountOut").val(amtOut.toFixed(2));
+            $("#ClientAmountOut").val(amtOut.toFixed(4));
         }
     };
 
@@ -161,7 +185,7 @@
         var ex = $("#ClientExRate").val();
 
         var amtIn = amtOut * ex;
-        $("#ClientAmountIn").val(amtIn.toFixed(2));
+        $("#ClientAmountIn").val(amtIn.toFixed(4));
     };
 
     function updateProviderExpectedPayInAmount() {
@@ -169,11 +193,13 @@
         var costRate = $("#ProviderCostRate").val();
         if (costRate > 0) {
             var expectedPayInAmount = amtIn / costRate;
-            $("#ProviderExpectedPayInAmount").val(expectedPayInAmount.toFixed(2));
+            $("#ProviderExpectedPayInAmount").val(expectedPayInAmount.toFixed(4));
         }
     };
 
     $(document).ready(function () {
+        updateExpectedCurrencyPair();
+
         $('#ClientTradingProfileID').on('change', function () {
             updateClientCurrencyPairPriceRate();
         });
@@ -229,6 +255,29 @@ else if (Model.Type == "Q")
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="id" />
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="PayoutDone" class="col-md-6 col-form-label"></label>
+                <input asp-for="PayoutDone" type="checkbox" class="form-control" style="width: 30px; height: 30px;" />
+                <span asp-validation-for="PayoutDone" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="MiniAccount" class="col-md-6 col-form-label"></label>
+                <input asp-for="MiniAccount" type="checkbox" class="form-control" style="width: 30px; height: 30px;" />
+                <span asp-validation-for="MiniAccount" class="text-danger"></span>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label asp-for="OvernightDeposit" class="col-md-6 col-form-label"></label>
+                <input asp-for="OvernightDeposit" type="checkbox" class="form-control" style="width: 30px; height: 30px;" />
+                <span asp-validation-for="OvernightDeposit" class="text-danger"></span>
+            </div>
+            <div class="form-group row">
+                <label asp-for="Remark" class="col-md-6 col-form-label"></label>
+                <textarea asp-for="Remark" class="col-md-6 form-control " rows="5"></textarea>
+                <span asp-validation-for="Remark" class="text-danger"></span>
+            </div>
             <div class="form-group row">
                 <label asp-for="ReferenceNo" class="col-md-6 col-form-label"></label>
                 <input asp-for="ReferenceNo" class="col-md-6 form-control" readonly />
@@ -270,13 +319,17 @@ else if (Model.Type == "Q")
                 <span asp-validation-for="ClientCurrencyPairID" class="text-danger"></span>
             </div>
             <div class="form-group row" hidden="@(Model.Type == "D")">
+                <label class="col-md-6 col-form-label">Expected Currency Pair</label>
+                <label id="ExpectedCurrencyPair" class="col-md-6 col-form-label"></label>
+            </div>
+            <div class="form-group row" hidden="@(Model.Type == "D")">
                 <label asp-for="ClientDfrRate" class="col-md-6 col-form-label"></label>
                 <input asp-for="ClientDfrRate" class="col-md-6 form-control" />
                 <span asp-validation-for="ClientDfrRate" class="text-danger"></span>
             </div>
             <div class="form-group row" hidden="@(Model.Type == "D")">
                 <label asp-for="ClientUniqueDfr" class="col-md-6 col-form-label"></label>
-                <input asp-for="ClientUniqueDfr" type="checkbox" class="form-control" style="width: 30px; height: 30px;"/>
+                <input asp-for="ClientUniqueDfr" type="checkbox" class="form-control" style="width: 30px; height: 30px;" />
                 <span asp-validation-for="ClientUniqueDfr" class="text-danger"></span>
             </div>
             <div class="form-group row" hidden="@(Model.Type == "D")">
@@ -301,24 +354,24 @@ else if (Model.Type == "Q")
             </div>
             <div class="form-group row" hidden="@(Model.Type == "D")">
                 <label asp-for="ClientAmountOut" class="col-md-6 col-form-label"></label>
-                <input asp-for="ClientAmountOut" class="col-md-6 form-control"   />
+                <input asp-for="ClientAmountOut" class="col-md-6 form-control" />
                 <span asp-validation-for="ClientAmountOut" class="text-danger"></span>
             </div>
             @*<div class="form-group row" hidden="@(Model.Type == "D")">
-                <label asp-for="ClientPayOutAccountID" class="col-md-6 col-form-label"></label>
-                @Html.DropDownList("ClientPayOutAccountID", ViewBag.Account as SelectList, "", new { @class = "col-md-6 form-control" })
-                <span asp-validation-for="ClientPayOutAccountID" class="text-danger"></span>
-            </div>*@
+            <label asp-for="ClientPayOutAccountID" class="col-md-6 col-form-label"></label>
+            @Html.DropDownList("ClientPayOutAccountID", ViewBag.Account as SelectList, "", new { @class = "col-md-6 form-control" })
+            <span asp-validation-for="ClientPayOutAccountID" class="text-danger"></span>
+        </div>*@
             <div class="form-group row" hidden="@(Model.Type == "L")">
                 <label asp-for="ProviderTradingProfileID" class="col-md-6 col-form-label"></label>
                 @Html.DropDownList("ProviderTradingProfileID", ViewBag.ProviderTradingProfile as SelectList, "", new { @class = "col-md-6 form-control" })
                 <span asp-validation-for="ProviderTradingProfileID" class="text-danger"></span>
             </div>
-            <div class="form-group row" hidden >
+            <div class="form-group row" hidden>
                 <label asp-for="ProviderCurrencyID" class="col-md-6 col-form-label"></label>
                 @Html.DropDownList("ProviderCurrencyID", ViewBag.Currency as SelectList, "", new { @class = "col-md-6 form-control" })
                 <span asp-validation-for="ProviderCurrencyID" class="text-danger"></span>
-            </div> 
+            </div>
             <div class="form-group row" hidden="@(Model.Type == "L")">
                 <label asp-for="ProviderCostDate" class="col-md-6 col-form-label"></label>
                 <input asp-for="ProviderCostDate" type="date" class="col-md-6 form-control" />
@@ -345,9 +398,19 @@ else if (Model.Type == "Q")
             <span asp-validation-for="DateTimeModified" class="text-danger"></span>
         </div>*@
             <div class="form-group" hidden>
+                <label asp-for="PayoutDoneByID" class="control-label"></label>
+                <input asp-for="PayoutDoneByID" class="form-control" />
+                <span asp-validation-for="PayoutDoneByID" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
                 <label asp-for="DateTimeAdded" class="control-label"></label>
                 <input asp-for="DateTimeAdded" class="form-control" />
                 <span asp-validation-for="DateTimeAdded" class="text-danger"></span>
+            </div>
+            <div class="form-group" hidden>
+                <label asp-for="AddedByID" class="control-label"></label>
+                <input asp-for="AddedByID" class="form-control" />
+                <span asp-validation-for="AddedByID" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />

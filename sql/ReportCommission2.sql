@@ -9,4 +9,4 @@ select
 t.*,
 (isnull(t.IntroducerCommissionRate,0)/100)*r.ClientPayoutUSD as IntroducerCommissionUSD
 from t
-left outer join ReportTxn r on t.TxnID=r.TxnID
+left outer join ReportTxnOriginal r on t.TxnID=r.TxnID

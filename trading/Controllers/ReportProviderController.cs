@@ -21,7 +21,8 @@ namespace trading.Controllers
         // GET: ReportProvider
         public async Task<IActionResult> Index()
         {
-            return View(await _context.ReportProvider.OrderBy(m=>m.ProviderTradingProfileName).ToListAsync());
+            return View(await _context.ReportProvider
+                .OrderByDescending(m=>m.MissingSlipAmount).ThenBy(m => m.ProviderTradingProfileName).ToListAsync());
         }
 
         // GET: ReportProvider/Details/5

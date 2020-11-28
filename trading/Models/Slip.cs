@@ -90,5 +90,8 @@ namespace trading.Models
 
         [Display(Name = "Sender")]
         public string SenderName { get; set; }
+
+        [Display(Name = "Currency")]
+        public string CurrencyName2 { get; set; }
     } 
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -19,9 +20,22 @@ namespace trading.Controllers
         }
 
         // GET: ReportAccountReceivable
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int providerID, int providerTradingProfileID)
         {
-            return View(await _context.ReportAccountReceivable.ToListAsync());
+            ViewBag.Provider = new SelectList(_context.Provider.ToList()
+                      .OrderBy(m => m.ProviderName), "id", "ProviderName", providerID);
+
+            ViewBag.ProviderTradingProfile = new SelectList(_context.ProviderTradingProfile.ToList()
+                      .OrderBy(m => m.ProviderTradingProfileName), "id", "ProviderTradingProfileName", providerTradingProfileID);
+             
+            var ReportAccountReceivable = _context.ReportAccountReceivable
+                .Where(x => (providerID == 0 || x.ProviderID == providerID) &&
+                      (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID));
+
+            if (HttpContext.Session.GetString("Role") == "S")
+                return View(await ReportAccountReceivable.OrderByDescending(m => m.AmountReceivable).ToListAsync());
+
+            return RedirectToAction("Logout", "Home");
         }
 
         // GET: ReportAccountReceivable/Details/5

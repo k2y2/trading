@@ -8,6 +8,8 @@ namespace trading.Models
     {
         public int ProviderTradingProfileID { get; set; }
 
+        public int ProviderID { get; set; }
+
         [Display(Name = "Provider Trading Profile")]
         public string ProviderTradingProfileName { get; set; }
 

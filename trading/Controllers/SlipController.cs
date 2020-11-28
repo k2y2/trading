@@ -21,19 +21,31 @@ namespace trading.Controllers
         }
 
         // GET: Slip
-        public async Task<IActionResult> Index(int providerTradingProfileID, bool isMissingSlipOnly)
+        public async Task<IActionResult> Index(DateTime dateFilterStart, DateTime dateFilterEnd, int providerTradingProfileID, bool isMissingSlipOnly)
         {
-            ViewBag.isMissingSlipOnly = isMissingSlipOnly;
-            ViewBag.ProviderTradingProfile = new SelectList(_context.SlipView.ToList().GroupBy(x => x.ProviderTradingProfileID).Select(x => x.First()).OrderBy(x=>x.ProviderTradingProfileName), "ProviderTradingProfileID", "ProviderTradingProfileName", providerTradingProfileID);
-
             var slipView = _context.SlipView.AsQueryable();
 
-            if (isMissingSlipOnly)
-                slipView = slipView.Where(x => x.ActualAmount == null || x.ActualAmount == 0);
-            if (providerTradingProfileID > 0)
-                slipView = slipView.Where(x => x.ProviderTradingProfileID == providerTradingProfileID);
+            //date range
+            if (dateFilterStart == DateTime.MinValue) dateFilterStart = slipView.Where(x => x.ActualAmount == null || x.ActualAmount == 0).Min(x=>x.SlipDate);
+            if (dateFilterEnd == DateTime.MinValue) dateFilterEnd = Utility.GetLocalDateTime().Date;  
 
-            return View(await slipView.OrderBy(x => x.ProviderTradingProfileName).ToListAsync());
+            ViewBag.dateFilterStart = dateFilterStart.ToString("yyyy-MM-dd");
+            ViewBag.dateFilterEnd = dateFilterEnd.ToString("yyyy-MM-dd");
+
+            ViewBag.isMissingSlipOnly = isMissingSlipOnly;
+            ViewBag.ProviderTradingProfile = new SelectList(_context.SlipView.ToList().GroupBy(x => x.ProviderTradingProfileID).Select(x => x.First()).OrderBy(x=>x.ProviderTradingProfileName), "ProviderTradingProfileID", "ProviderTradingProfileName", providerTradingProfileID);
+            
+            //if (isMissingSlipOnly)
+            //    slipView = slipView.Where(x => x.ActualAmount == null || x.ActualAmount == 0);
+            //if (providerTradingProfileID > 0)
+            //    slipView = slipView.Where(x => x.ProviderTradingProfileID == providerTradingProfileID);
+
+            slipView = slipView.Where(x => x.SlipDate >= dateFilterStart &&
+                                        x.SlipDate <= dateFilterEnd &&
+                                        (!isMissingSlipOnly || (x.ActualAmount == null || x.ActualAmount == 0)) &&
+                                        (providerTradingProfileID == 0 || x.ProviderTradingProfileID == providerTradingProfileID));
+
+            return View(await slipView.OrderByDescending(x => x.SlipDate).ToListAsync());
         }
 
         // GET: Slip/Details/5

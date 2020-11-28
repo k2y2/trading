@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks; 
 using HtmlAgilityPack; 
@@ -90,11 +92,36 @@ namespace trading.Controllers
             return View(dfrView);
         }
 
+        private string getWebResponse(string url)
+        {
+            WebClient client = new WebClient();  
+            string htmlCode = "";
+
+            while (true)
+            {
+                try
+                {
+                    htmlCode = client.DownloadString(url);
+                    if (htmlCode != null) break;
+                }
+                catch (WebException e)
+                {
+                    //Console.WriteLine(e.Message);
+                    if (e.Message.Contains("400")) break;
+                    Thread.Sleep(1000);
+                }
+            }
+              
+            return htmlCode;
+        }
+
         private HtmlNodeCollection getNodes(string url, string xpath)
         {
             WebClient client = new WebClient();
-            client.Credentials = new NetworkCredential("1979851673895", "d4s2dp6irms0l4eht1k1jk4d2q");
-            string htmlCode=""; 
+            client.Credentials = new NetworkCredential("1979862209538", "n8n2rkai6pb1q6r5gd2qs472pg");//prod
+            //client.Credentials = new NetworkCredential("weq702735343", "fcbrm3lv59atklcukqlh7r21un");//test
+
+            string htmlCode =""; 
 
             while (true)
             {
@@ -116,26 +143,32 @@ namespace trading.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateDfrTest()
+        public ActionResult UpdateDfr()
         { 
-            string url;//"https://www.x-rates.com/calculator/?from=USD&to=hkd"
-            HtmlNodeCollection colNode;
+            string url; 
+            HtmlNodeCollection colNode; 
+            string resp;
+            bool parseResult;
             decimal rate;
             var currencyPair = _context.CurrencyPairView;
 
             DateTime today = Utility.GetLocalDateTime().Date;
+
             var dfrList = _context.Dfr.Where(m => m.TradeDate == today);
-            _context.RemoveRange(dfrList);
+            _context.RemoveRange(dfrList); 
 
             foreach (var cp in currencyPair)
             { 
-                url = "https://xecdapi.xe.com/v1/convert_from.xml/?from=" + cp.CurrencyName1 + "&to=" + cp.CurrencyName2;
-
-                colNode = getNodes(url, "//to/rate/mid");
-                if (colNode != null)
+                if (cp.CurrencyName1=="ETH" || cp.CurrencyName1 == "UST" || cp.CurrencyName2 == "ETH" || cp.CurrencyName2 == "UST")
                 {
-                    string s = colNode[0].InnerText;
-                    bool parseResult = decimal.TryParse(s, out rate);
+                    string currFrom = cp.CurrencyName1 == "UST" ? "USDT" : cp.CurrencyName1;
+                    string currTo = cp.CurrencyName2 == "UST" ? "USDT" : cp.CurrencyName2;
+
+                    url = "https://min-api.cryptocompare.com/data/price?fsym="+currFrom+"&tsyms=" + currTo;
+                    resp = getWebResponse(url);
+                    var result = Regex.Match(resp, @"\d+(\.\d+)?").Value;
+
+                    parseResult = decimal.TryParse(result, out rate);
 
                     if (parseResult)
                     {
@@ -148,6 +181,28 @@ namespace trading.Controllers
                         _context.Add(dfr);
                     }
                 }
+                else
+                { 
+                    url = "https://xecdapi.xe.com/v1/convert_from.xml/?from=" + cp.CurrencyName1 + "&to=" + cp.CurrencyName2;
+
+                    colNode = getNodes(url, "//to/rate/mid");
+                    if (colNode != null)
+                    {
+                        string s = colNode[0].InnerText;
+                        parseResult = decimal.TryParse(s, NumberStyles.Float, CultureInfo.CreateSpecificCulture("en-US"), out rate);
+
+                        if (parseResult)
+                        {
+                            Dfr dfr = new Dfr();
+                            dfr.TradeDate = Utility.GetLocalDateTime().Date;
+                            dfr.CurrencyPairID = cp.id;
+                            dfr.Rate = rate;
+                            dfr.DateTimeAdded = Utility.GetLocalDateTime();
+                            dfr.DateTimeModified = Utility.GetLocalDateTime();
+                            _context.Add(dfr);
+                        }
+                    }
+                }
             }
             _context.SaveChanges();
             //var txn = _context.TxnCompleteView.Where(x => x.id == txnID).FirstOrDefault();
@@ -155,7 +210,7 @@ namespace trading.Controllers
         }
 
         [HttpPost]
-        public ActionResult UpdateDfr()
+        public ActionResult UpdateDfr2()
         { 
             //ChromeOptions options = new ChromeOptions();
             //options.AddArgument("headless");

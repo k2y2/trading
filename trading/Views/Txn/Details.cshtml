@@ -155,6 +155,36 @@
         <dd class="col-sm-9" hidden="@(Model.Type == "L")">
             @Html.DisplayFor(model => model.ProviderBankAccountName)
         </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.PayoutDone)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @(Model.PayoutDone ? "Y" : "N")
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.PayoutDoneBy)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.PayoutDoneBy)
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.MiniAccount)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @(Model.MiniAccount ? "Y" : "N")
+        </dd>
+        <dt class="col-sm-3" hidden="@(Model.Type == "D")">
+            @Html.DisplayNameFor(model => model.OvernightDeposit)
+        </dt>
+        <dd class="col-sm-9" hidden="@(Model.Type == "D")">
+            @(Model.OvernightDeposit ? "Y" : "N")
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.Remark)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.Remark)
+        </dd>
         <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.DateTimeModified)
         </dt>
@@ -162,10 +192,22 @@
             @Html.DisplayFor(model => model.DateTimeModified)
         </dd>
         <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.ModifiedBy)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.ModifiedBy)
+        </dd>
+        <dt class="col-sm-3">
             @Html.DisplayNameFor(model => model.DateTimeAdded)
         </dt>
         <dd class="col-sm-9">
             @Html.DisplayFor(model => model.DateTimeAdded)
+        </dd>
+        <dt class="col-sm-3">
+            @Html.DisplayNameFor(model => model.AddedBy)
+        </dt>
+        <dd class="col-sm-9">
+            @Html.DisplayFor(model => model.AddedBy)
         </dd>
     </dl>
 </div>

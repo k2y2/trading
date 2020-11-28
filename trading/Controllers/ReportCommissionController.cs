@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Spire.Xls;
@@ -43,8 +44,11 @@ namespace trading.Controllers
 
             ViewBag.Month = new SelectList(month, "Key", "Value", m);  
             ViewBag.Introducer = new SelectList(_context.Introducer.OrderBy(x => x.IntroducerName).ToList(), "id", "IntroducerName");
+              
+            if (HttpContext.Session.GetString("Role") == "S")
+                return View(); 
 
-            return View();
+            return RedirectToAction("Logout","Home");
         }
 
         [HttpPost]
@@ -56,9 +60,10 @@ namespace trading.Controllers
             var introducer = _context.Introducer.FirstOrDefault(m => m.id == IntroducerID);
             string introducerName = introducer.IntroducerName;
             string introducerLegalName = introducer.IntroducerLegalName;
+            string wsName = introducerName.Length > 31 ? introducerName.Substring(0, 31) : introducerName;
             //decimal? total = 0;
 
-            DataTable dt2 = new DataTable(introducerName);
+            DataTable dt2 = new DataTable(wsName);
             dt2.Columns.AddRange(new DataColumn[9] { new DataColumn("Trade Ref"),
                                                     new DataColumn("Date"),
                                                     new DataColumn("Client"),
@@ -78,13 +83,15 @@ namespace trading.Controllers
             {
                 dt2.Rows.Add(row.ReferenceNo, row.TradeDate.ToShortDateString(), row.ClientTradingProfileName, row.ClientCurrencyNameIn, String.Format("{0:n}", row.ClientAmountIn), row.ClientCurrencyNameOut, String.Format("{0:n}", row.ClientAmountOut), row.IntroducerCommissionRate + "%", row.IntroducerCommissionUSD == null ? "INCOMPLETE" : String.Format("{0:n}", row.IntroducerCommissionUSD));
             }
-            dt2.Rows.Add("", "", "", "", "", "", "", "Total 1", String.Format("{0:n}", total2));
+            dt2.Rows.Add("", "", "", "", "", "", "", "Total 2", String.Format("{0:n}", total2));//String.Format("{0:n}", total2)
 
             int dt2RowCount = dt2.Rows.Count;
+            
+
             /////////////////////////////////////////////////////////////////////////////////
             //
 
-            DataTable dt1 = new DataTable(introducerName);
+            DataTable dt1 = new DataTable(wsName);
             dt1.Columns.AddRange(new DataColumn[9] { new DataColumn("Trade Ref"),
                                                     new DataColumn("Date"),
                                                     new DataColumn("Client"),
@@ -104,13 +111,13 @@ namespace trading.Controllers
             {
                 dt1.Rows.Add(row.ReferenceNo, row.TradeDate.ToShortDateString(), row.ClientTradingProfileName, row.ClientCurrencyNameIn, String.Format("{0:n}", row.ClientAmountIn), row.ClientCurrencyNameOut, String.Format("{0:n}", row.ClientAmountOut), row.IntroducerCommissionRate + "%", row.IntroducerCommissionUSD == null ? "INCOMPLETE" : String.Format("{0:n}", row.IntroducerCommissionUSD));
             }
-            dt1.Rows.Add("", "", "", "", "", "", "", "Total 2", String.Format("{0:n}", total1));
+            dt1.Rows.Add("", "", "", "", "", "", "", "Total 1", String.Format("{0:n}", total1));
 
             int dt1RowCount = dt1.Rows.Count;
             /////////////////////////////////////////////////////////////////////////////////
             using (XLWorkbook wb = new XLWorkbook())
             {
-                var ws = wb.Worksheets.Add(dt2);
+                var ws = wb.Worksheets.Add(dt1);
                 ws.Row(1).InsertRowsAbove(14);
                 ws.Column(1).InsertColumnsBefore(1);
                 ws.SetShowGridLines(false);
@@ -136,11 +143,21 @@ namespace trading.Controllers
                 ws.Cell(6, 4).Value = "'" + month + "-" + DateTime.Today.Year.ToString();
 
                 //tables
-                ws.Cell(13, 4).Value = "Type 2: Commissions Based % of Amounts Traded";
-                ws.Cell(dt2RowCount + 17, 4).Value = "Type 1: Commissions Based on Trade Gross Profit";
-                ws.Cell(dt2RowCount + 19, 2).InsertTable(dt1);
-                ws.Cell(dt2RowCount + dt1RowCount + 20, 9).Value = "Grand Total";
-                ws.Cell(dt2RowCount + dt1RowCount + 20, 10).Value = String.Format("{0:n}", total2 + total1);
+                ws.Cell(13, 4).Value = "Type 1: Commissions Based on Trade Gross Profit";
+                ws.Cell(dt1RowCount + 17, 4).Value = "Type 2: Commissions Based % of Amounts Traded";
+                ws.Cell(dt1RowCount + 19, 2).InsertTable(dt2);
+                ws.Cell(dt1RowCount + dt2RowCount + 20, 9).Value = "Grand Total";
+                ws.Cell(dt1RowCount + dt2RowCount + 20, 10).Style.NumberFormat.Format = "#,##0.00";
+                ws.Cell(dt1RowCount + dt2RowCount + 20, 10).DataType = XLDataType.Number;
+                ws.Cell(dt1RowCount + dt2RowCount + 20, 10).Value = total1 + total2;
+
+                //ws.Column(6).CellsUsed().SetDataType(XLDataType.Number);
+
+                //ws.Range(16, 6, 16 + dt1RowCount - 1, 6).Style.NumberFormat.Format = "0.00";
+                //ws.Range(16,6,16+ dt1RowCount-1,6).DataType = XLDataType.Number;
+                //ws.Range(20 + dt1RowCount, 6, 20 + dt1RowCount + dt2RowCount - 2, 6).Style.NumberFormat.Format = "0.00";
+                //ws.Range(20+ dt1RowCount, 6, 20 + dt1RowCount+ dt2RowCount-2,6).DataType = XLDataType.Number;
+
 
                 //logo
                 var logoCommPath = _env.WebRootFileProvider.GetFileInfo("image/logoComm.png").PhysicalPath;

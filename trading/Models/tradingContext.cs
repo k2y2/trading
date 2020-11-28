@@ -15,6 +15,7 @@ namespace trading.Models
         {
         }
 
+        public virtual DbSet<ReportTxnOriginal> ReportTxnOriginal { get; set; }
         public virtual DbSet<ReportCommission1> ReportCommission1 { get; set; }
         public virtual DbSet<ReportCommission2> ReportCommission2 { get; set; }
         public virtual DbSet<User> User { get; set; }
@@ -78,12 +79,119 @@ namespace trading.Models
             if (!optionsBuilder.IsConfigured)
             {
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Data Source=SQL5053.site4now.net;Initial Catalog=DB_A6159D_tradingDEV;User Id=DB_A6159D_tradingDEV_admin;Password=phoenix1;");
+                //optionsBuilder.UseSqlServer("Data Source=SQL5053.site4now.net;Initial Catalog=DB_A6159D_tradingDEV;User Id=DB_A6159D_tradingDEV_admin;Password=phoenix1;");
+                optionsBuilder.UseSqlServer("Data Source=SQL5080.site4now.net;Initial Catalog=DB_A6159D_tradingPRD;User Id=DB_A6159D_tradingPRD_admin;Password=phoenix1;");
             }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<ReportTxnOriginal>(entity =>
+            {
+                entity.HasNoKey();
+
+                entity.ToView("ReportTxnOriginal");
+
+                entity.Property(e => e.ClientCurrencyIDIn).HasColumnName("ClientCurrencyIDIn");
+
+                entity.Property(e => e.ClientAmountIn).HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.ClientCurrencyNameIn)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ClientCurrencyIDOut).HasColumnName("ClientCurrencyIDOut");
+
+                entity.Property(e => e.ClientAmountOut).HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.ClientCurrencyNameOut)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ClientPayoutMissing).HasColumnType("decimal(38, 4)");
+
+                entity.Property(e => e.ClientPayoutOrig).HasColumnType("decimal(38, 4)");
+
+                entity.Property(e => e.ClientPayoutUSD)
+                    .HasColumnName("ClientPayoutUSD")
+                    .HasColumnType("decimal(38, 13)"); 
+
+                entity.Property(e => e.ClientID).HasColumnName("ClientID");
+
+                entity.Property(e => e.ClientTradingProfileID).HasColumnName("ClientTradingProfileID");
+
+                entity.Property(e => e.ClientTradingProfileName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.GrossProfitUSD)
+                    .HasColumnName("GrossProfitUSD")
+                    .HasColumnType("decimal(38, 6)");
+
+                entity.Property(e => e.GrossProfitUSDPct)
+                    .HasColumnName("GrossProfitUSDPct")
+                    .HasColumnType("decimal(38, 6)");
+
+                entity.Property(e => e.IntroducerCommissionUSD1)
+                    .HasColumnName("IntroducerCommissionUSD1")
+                    .HasColumnType("decimal(38, 6)");
+
+                entity.Property(e => e.IntroducerCommissionUSD2)
+                    .HasColumnName("IntroducerCommissionUSD2")
+                    .HasColumnType("decimal(38, 6)");
+
+                entity.Property(e => e.ProviderPayinUSD)
+                    .HasColumnName("ProviderPayinUSD")
+                    .HasColumnType("decimal(33, 15)");
+
+                entity.Property(e => e.ProviderTradingProfileID).HasColumnName("ProviderTradingProfileID");
+
+                entity.Property(e => e.ProviderTradingProfileName)
+                    .HasMaxLength(100)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.ReferenceNo)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.TradeDate).HasColumnType("date");  
+
+                entity.Property(e => e.TxnID).HasColumnName("TxnID");
+            });
+
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.Property(e => e.id).HasColumnName("id");
+
+                entity.Property(e => e.DateTimeAdded).HasColumnType("datetime");
+
+                entity.Property(e => e.DateTimeModified).HasColumnType("datetime");
+
+                entity.Property(e => e.Password)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.UserName)
+                    .IsRequired()
+                    .HasMaxLength(20)
+                    .IsUnicode(false);
+            });
+
             modelBuilder.Entity<ReportCommission1>(entity =>
             {
                 entity.HasNoKey();
@@ -171,24 +279,7 @@ namespace trading.Models
 
                 entity.Property(e => e.TxnID).HasColumnName("TxnID");
             });
-            modelBuilder.Entity<User>(entity =>
-            {
-                entity.Property(e => e.Id).HasColumnName("id");
-
-                entity.Property(e => e.DateTimeAdded).HasColumnType("datetime");
-
-                entity.Property(e => e.DateTimeModified).HasColumnType("datetime");
-
-                entity.Property(e => e.Password)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.UserName)
-                    .IsRequired()
-                    .HasMaxLength(20)
-                    .IsUnicode(false);
-            });
+            
             modelBuilder.Entity<AccountAdjust>(entity =>
             {
                 entity.Property(e => e.id).HasColumnName("id");
@@ -200,6 +291,8 @@ namespace trading.Models
                 entity.Property(e => e.DateTimeAdded).HasColumnType("datetime");
 
                 entity.Property(e => e.DateTimeModified).HasColumnType("datetime");
+
+                entity.Property(e => e.ActualDate).HasColumnType("date"); 
 
                 entity.Property(e => e.Reference)
                     .HasMaxLength(200)
@@ -231,6 +324,8 @@ namespace trading.Models
 
                 entity.Property(e => e.id).HasColumnName("id");
 
+                entity.Property(e => e.ActualDate).HasColumnType("date");
+
                 entity.Property(e => e.Reference)
                     .HasMaxLength(200)
                     .IsUnicode(false);
@@ -256,6 +351,8 @@ namespace trading.Models
                 entity.Property(e => e.DateTimeModified).HasColumnType("datetime");
 
                 entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+
+                entity.Property(e => e.ActualDate).HasColumnType("date");
 
                 entity.Property(e => e.Reference)
                     .HasMaxLength(200)
@@ -294,6 +391,8 @@ namespace trading.Models
                 entity.Property(e => e.id).HasColumnName("id");
 
                 entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+
+                entity.Property(e => e.ActualDate).HasColumnType("date");
 
                 entity.Property(e => e.Reference)
                     .HasMaxLength(200)
@@ -417,7 +516,7 @@ namespace trading.Models
 
                 entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
 
-                entity.Property(e => e.TradeDate).HasColumnType("date");
+                entity.Property(e => e.TradeDateSince).HasColumnType("date");
             });
 
             modelBuilder.Entity<ReportAccountReceivable>(entity =>
@@ -429,6 +528,8 @@ namespace trading.Models
                 entity.ToView("ReportAccountReceivable");
 
                 entity.Property(e => e.ProviderTradingProfileID).HasColumnName("ProviderTradingProfileID");
+
+                entity.Property(e => e.ProviderID).HasColumnName("ProviderID");
 
                 entity.Property(e => e.AmountReceivable).HasColumnType("decimal(38, 4)");
 
@@ -452,6 +553,17 @@ namespace trading.Models
                 //entity.HasKey("TxnID");
                 entity.ToView("ReportTxn");
 
+                entity.Property(e => e.ClientCurrencyIDIn).HasColumnName("ClientCurrencyIDIn");
+
+                entity.Property(e => e.ClientAmountIn).HasColumnType("decimal(18, 4)");
+
+                entity.Property(e => e.ClientCurrencyNameIn)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
+
+                entity.Property(e => e.ClientCurrencyIDOut).HasColumnName("ClientCurrencyIDOut");
+
                 entity.Property(e => e.ClientAmountOut).HasColumnType("decimal(18, 4)");
 
                 entity.Property(e => e.ClientCurrencyNameOut)
@@ -462,6 +574,8 @@ namespace trading.Models
                 entity.Property(e => e.ClientPayoutUSD)
                     .HasColumnName("ClientPayoutUSD")
                     .HasColumnType("decimal(38, 13)");
+
+                entity.Property(e => e.ClientID).HasColumnName("ClientID");
 
                 entity.Property(e => e.ClientTradingProfileID).HasColumnName("ClientTradingProfileID");
                 entity.Property(e => e.ClientTradingProfileName)
@@ -509,6 +623,12 @@ namespace trading.Models
                 entity.Property(e => e.TradeDate).HasColumnType("date");
 
                 entity.Property(e => e.TxnID).HasColumnName("TxnID");
+
+                entity.Property(e => e.Role)
+                    .IsRequired()
+                    .HasMaxLength(1)
+                    .IsUnicode(false)
+                    .IsFixedLength();
             });
             modelBuilder.Entity<CurrencyPairView>(entity =>
             {
@@ -991,7 +1111,7 @@ namespace trading.Models
 
                 entity.Property(e => e.id).HasColumnName("id");
 
-                entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.Rate).HasColumnType("decimal(20, 7)");
 
                 entity.Property(e => e.TradeDate).HasColumnType("date");
             });
@@ -1083,9 +1203,9 @@ namespace trading.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(20, 7)");
 
-                entity.Property(e => e.ClientExRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientExRate).HasColumnType("decimal(20, 8)");
 
                 entity.Property(e => e.ClientTradingProfileID).HasColumnName("ClientTradingProfileID");
 
@@ -1117,7 +1237,7 @@ namespace trading.Models
 
                 entity.Property(e => e.LinkedProviderCostDate).HasColumnType("date");
 
-                entity.Property(e => e.LinkedProviderCostRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.LinkedProviderCostRate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.LinkedProviderCurrencyID).HasColumnName("LinkedProviderCurrencyID");
 
@@ -1142,7 +1262,7 @@ namespace trading.Models
 
                 entity.Property(e => e.ProviderCostDate).HasColumnType("date");
 
-                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.ProviderCurrencyID).HasColumnName("ProviderCurrencyID");
 
@@ -1182,6 +1302,8 @@ namespace trading.Models
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
+
+                entity.Property(e => e.ClientPayoutAmountOutstanding).HasColumnType("decimal(18, 4)");
             });
             modelBuilder.Entity<ReportAccount>(entity =>
             {
@@ -1255,7 +1377,7 @@ namespace trading.Models
 
                 entity.Property(e => e.ProviderPayinUSDRate)
                     .HasColumnName("ProviderPayinUSDRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.TxnID).HasColumnName("TxnID");
 
@@ -1269,7 +1391,7 @@ namespace trading.Models
 
                 entity.Property(e => e.UsedClientPayoutFXRate)
                     .HasColumnName("UsedClientPayoutFXRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.UsedCurrencyID).HasColumnName("UsedCurrencyID");
 
@@ -1297,7 +1419,7 @@ namespace trading.Models
 
                 entity.Property(e => e.UsedUSDRate)
                     .HasColumnName("UsedUSDRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.ReferenceNo)
                     .IsRequired()
@@ -1353,6 +1475,11 @@ namespace trading.Models
                     .IsUnicode(false);
 
                 entity.Property(e => e.SlipDate).HasColumnType("date");
+
+                entity.Property(e => e.CurrencyName2)
+                    .HasMaxLength(5)
+                    .IsUnicode(false)
+                    .IsFixedLength();
             });
 
             modelBuilder.Entity<Payout>(entity =>
@@ -1377,7 +1504,7 @@ namespace trading.Models
 
                 entity.Property(e => e.ProviderPayinUSDRate)
                     .HasColumnName("ProviderPayinUSDRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.TxnID).HasColumnName("TxnID");
 
@@ -1387,13 +1514,13 @@ namespace trading.Models
 
                 entity.Property(e => e.UsedClientPayoutFXRate)
                     .HasColumnName("UsedClientPayoutFXRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.UsedCurrencyID).HasColumnName("UsedCurrencyID");
 
                 entity.Property(e => e.UsedUSDRate)
                     .HasColumnName("UsedUSDRate")
-                    .HasColumnType("decimal(10, 4)");
+                    .HasColumnType("decimal(18, 7)");
 
                 entity.Property(e => e.ReferenceNo)
                     .IsRequired()
@@ -1459,13 +1586,15 @@ namespace trading.Models
                     .HasMaxLength(10)
                     .IsUnicode(false);
 
-                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(20, 7)");
 
-                entity.Property(e => e.ClientExRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientExRate).HasColumnType("decimal(20, 8)");
 
                 entity.Property(e => e.ClientTradingProfileID).HasColumnName("ClientTradingProfileID");
 
                 entity.Property(e => e.ClientUniqueDfr).HasColumnName("ClientUniqueDfr");
+
+                entity.Property(e => e.ClientID).HasColumnName("ClientID");
 
                 entity.Property(e => e.ClientTradingProfileName)
                     .HasMaxLength(50)
@@ -1493,7 +1622,7 @@ namespace trading.Models
 
                 entity.Property(e => e.ProviderCostDate).HasColumnType("date");
 
-                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.ProviderCurrencyID).HasColumnName("ProviderCurrencyID");
 
@@ -1538,6 +1667,35 @@ namespace trading.Models
                     .IsRequired()
                     .HasMaxLength(20)
                     .IsUnicode(false);
+
+
+                entity.Property(e => e.Remark)
+                                    .HasMaxLength(1000)
+                                    .IsFixedLength();
+
+                entity.Property(e => e.PayoutDone).HasColumnName("PayoutDone");
+
+                entity.Property(e => e.MiniAccount).HasColumnName("MiniAccount");
+
+                entity.Property(e => e.OvernightDeposit).HasColumnName("OvernightDeposit");
+
+                entity.Property(e => e.ModifiedByID).HasColumnName("ModifiedByID");
+
+                entity.Property(e => e.PayoutDoneByID).HasColumnName("PayoutDoneByID");
+
+                entity.Property(e => e.AddedByID).HasColumnName("AddedByID");
+
+                entity.Property(e => e.PayoutDoneBy)
+                                    .HasMaxLength(20)
+                                    .IsUnicode(false);
+
+                entity.Property(e => e.ModifiedBy)
+                                    .HasMaxLength(20)
+                                    .IsUnicode(false);
+
+                entity.Property(e => e.AddedBy)
+                                    .HasMaxLength(20)
+                                    .IsUnicode(false);
             });
 
             modelBuilder.Entity<Sender>(entity =>
@@ -1602,9 +1760,9 @@ namespace trading.Models
 
                 entity.Property(e => e.ClientCurrencyPairID).HasColumnName("ClientCurrencyPairID");
 
-                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientDfrRate).HasColumnType("decimal(20, 7)");
 
-                entity.Property(e => e.ClientExRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ClientExRate).HasColumnType("decimal(20, 8)");
 
                 entity.Property(e => e.ClientTradingProfileID).HasColumnName("ClientTradingProfileID");
 
@@ -1622,7 +1780,7 @@ namespace trading.Models
 
                 entity.Property(e => e.ProviderCostDate).HasColumnType("date");
 
-                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.ProviderCostRate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.ProviderCurrencyID).HasColumnName("ProviderCurrencyID");
 
@@ -1649,6 +1807,22 @@ namespace trading.Models
                     .HasMaxLength(1)
                     .IsUnicode(false)
                     .IsFixedLength();
+
+                entity.Property(e => e.Remark)
+                                    .HasMaxLength(1000)
+                                    .IsFixedLength();
+
+                entity.Property(e => e.PayoutDone).HasColumnName("PayoutDone");
+
+                entity.Property(e => e.MiniAccount).HasColumnName("MiniAccount");
+
+                entity.Property(e => e.OvernightDeposit).HasColumnName("OvernightDeposit");
+
+                entity.Property(e => e.ModifiedByID).HasColumnName("ModifiedByID");
+
+                entity.Property(e => e.PayoutDoneByID).HasColumnName("PayoutDoneByID");
+
+                entity.Property(e => e.AddedByID).HasColumnName("AddedByID");
             });
 
 
@@ -1667,7 +1841,7 @@ namespace trading.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.Rate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.TradeDate).HasColumnType("date");
             });
@@ -1704,7 +1878,7 @@ namespace trading.Models
 
                 entity.Property(e => e.DateTimeModified).HasColumnType("datetime");
 
-                entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.Rate).HasColumnType("decimal(20, 7)");
 
                 entity.Property(e => e.TradeDate).HasColumnType("date");
             });
@@ -1745,7 +1919,7 @@ namespace trading.Models
                     .HasMaxLength(50)
                     .IsUnicode(false);
 
-                entity.Property(e => e.Rate).HasColumnType("decimal(10, 4)");
+                entity.Property(e => e.Rate).HasColumnType("decimal(20, 6)");
 
                 entity.Property(e => e.TradeDate).HasColumnType("date");
             });

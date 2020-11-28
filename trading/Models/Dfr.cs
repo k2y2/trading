@@ -21,7 +21,7 @@ namespace trading.Models
 
         [Required(ErrorMessage = "Field required")]
         [Display(Name = "Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal Rate { get; set; }
 
         [Display(Name = "Modified")]
@@ -44,7 +44,7 @@ namespace trading.Models
         public short CurrencyPairID { get; set; }
 
         [Display(Name = "Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal Rate { get; set; }
 
         [Display(Name = "Modified")]

@@ -43,6 +43,9 @@ namespace trading.Controllers
 
             //return View(await costRateView.ToListAsync());
             //return View(await _context.CostRate.ToListAsync());
+
+            //
+            _context.Database.ExecuteSqlRaw("sp_InitCostRate {0}", dateFilter);
             return View(await _context.CostRateView.Where(m => m.TradeDate == dateFilter).OrderBy(m => m.ProviderTradingProfileName).ToListAsync());
         }
 

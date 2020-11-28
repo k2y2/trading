@@ -24,6 +24,10 @@
     <!-- Freezze Column -->
     <link href="~/css/sticky.css" rel="stylesheet">
 
+    <!-- datatables -->
+    <!--<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/dt-1.10.22/b-1.6.5/b-html5-1.6.5/datatables.min.css" />-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/fh-3.1.7/kt-2.5.3/r-2.2.6/rr-1.2.7/sc-2.0.3/sl-1.3.1/datatables.min.css" />
+
 </head>
 
 <body>
@@ -37,15 +41,34 @@
                 </a>
             </div>
             <ul class="list-unstyled components">
-                <li>
+                <li style="text-align:center">
                     @Html.ActionLink("TX", "Index", "Txn")
                 </li>
-                <li>
+                <li style="text-align:center">
                     @Html.ActionLink("Payout", "Index", "Payout")
                 </li>
-                <li>
+                <li style="text-align:center">
                     @Html.ActionLink("Slip", "Index", "Slip")
                 </li>
+                @if (Context.Session.GetString("Role") == "S")
+                {
+                <li style="text-align:center">
+                    @Html.ActionLink("Commission", "Export", "ReportCommission")
+                </li>
+                <li style="text-align:center">
+                    @Html.ActionLink("Account Receivable", "Index", "ReportAccountReceivable")
+                </li>
+                <li style="text-align:center">
+                    @Html.ActionLink("Account Payable", "Index", "ReportAccountPayable")
+                </li>
+                <li style="text-align:center">
+                    @Html.ActionLink("Account Balance", "Index", "ReportAccountBalance")
+                </li>
+                <li style="text-align:center">
+                    @Html.ActionLink("Transaction History", "Index", "AccountTxn")
+                </li>
+
+                }
                 <li>
                     <a href="#SubmenuReport" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">Report</a>
                     <ul class="collapse list-unstyled" id="SubmenuReport">
@@ -53,14 +76,14 @@
                             @Html.ActionLink("Provider Slip", "Index", "ReportProvider")
                         </li>
                         @*<li>
-                            @Html.ActionLink("Account Payable", "Index", "ReportAccount")
-                        </li>*@
-                        <li>
-                            @Html.ActionLink("Commission", "Export", "ReportCommission")
-                        </li>
+                                @Html.ActionLink("Account Payable", "Index", "ReportAccount")
+                            </li>*@
+                        @if (Context.Session.GetString("Role") == "A" || Context.Session.GetString("Role") == "S")
+                        {
                         <li>
                             @Html.ActionLink("TX Gross Profit", "Index", "ReportTxn")
                         </li>
+                        }
                     </ul>
                 </li>
                 <li>
@@ -108,22 +131,10 @@
                             @Html.ActionLink("APA Bank Account", "Index", "AccountBankAccount")
                         </li>
                         <li>
-                            @Html.ActionLink("Adjsut", "Index", "AccountAdjust")
+                            @Html.ActionLink("Adjust", "Index", "AccountAdjust")
                         </li>
                         <li>
                             @Html.ActionLink("Transfer", "Index", "AccountTransfer")
-                        </li>
-                        <li>
-                            @Html.ActionLink("Transaction History", "Index", "AccountTxn")
-                        </li>
-                        <li>
-                            @Html.ActionLink("Account Balance", "Index", "ReportAccountBalance")
-                        </li>
-                        <li>
-                            @Html.ActionLink("Account Payable", "Index", "ReportAccountPayable")
-                        </li>
-                        <li>
-                            @Html.ActionLink("Account Receivable", "Index", "ReportAccountReceivable")
                         </li>
                     </ul>
                 </li>
@@ -159,6 +170,12 @@
                         <li>
                             @Html.ActionLink("Country", "Index", "Country")
                         </li>
+                        @if (Context.Session.GetString("Role") == "S")
+                        {
+                        <li>
+                            @Html.ActionLink("User", "Index", "User")
+                        </li>
+                        }
                     </ul>
                 </li>
             </ul>
@@ -175,55 +192,69 @@
 
         <!-- Page Content  -->
         <div id="content">
-            @if(Context.Session.GetString("UserName")!=null)
+            @if (Context.Session.GetString("UserName") != null)
             {
-                <nav class="navbar navbar-expand-lg navbar-light bg-light">
-                    <div class="nav navbar-nav ml-auto">
-                        @Html.ActionLink("Logout", "Logout", "Home")
-                    </div>
-                </nav>
+            <nav class="navbar navbar-expand-lg navbar-light bg-light justify-content-end">
+
+                @if (Context.Session.GetString("Role") == "A")
+                    {
+                <div class="badge badge-primary">
+                    Admin
+                </div><div>&nbsp; &nbsp;</div>
+                    }
+                @if (Context.Session.GetString("Role") == "S")
+                    {
+                <div class="badge badge-primary">
+                    Boss Level
+                </div><div>&nbsp; &nbsp;</div>
+                    }
+                <div class="">
+                    @Html.ActionLink("Logout", "Logout", "Home")
+                </div>
+            </nav>
             }
             <div class="container-fluid">
 
                 @*<button type="button" id="sidebarCollapse" class="btn btn-info">
-                <i class="fas fa-align-left"></i>
-                <span>Toggle Sidebar</span>
-            </button>
-            <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <i class="fas fa-align-justify"></i>
-            </button>*@
+                        <i class="fas fa-align-left"></i>
+                        <span>Toggle Sidebar</span>
+                    </button>
+                    <button class="btn btn-dark d-inline-block d-lg-none ml-auto" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                        <i class="fas fa-align-justify"></i>
+                    </button>*@
 
-                <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                    <ul class="nav navbar-nav ml-auto">
-                        <li class="nav-item active">
-                            <a class="nav-link" href="#">Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Page</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">Page</a>
-                        </li>
-                        <li class="nav-item">
-                            @Html.ActionLink("Logout", "Logout", "Home")
-                        </li>
-                    </ul>
-                </div>
+                @*<div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <ul class="nav navbar-nav ml-auto">
+                            <li class="nav-item active">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#">Page</a>
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink("Logout", "Logout", "Home")
+                            </li>
+                        </ul>
+                    </div>*@
 
             </div>
             @*</nav>*@
             <main role="main" class="pb-3">
-                @if(Context.Session.GetString("UserName")!=null)
+                @if (Context.Session.GetString("UserName") != null)
                 {
                 @RenderBody()
                 }
                 else
-                {  {IgnoreBody();}
+                {
+                    { IgnoreBody(); }
                 @Html.Partial("~/Views/Home/Login.cshtml")
                 }
             </main>
         </div>
-    </div> 
+    </div>
 
     <!-- jQuery CDN - Slim version (=without AJAX) -->
     @*<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>*@
@@ -238,14 +269,21 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js" integrity="sha384-uefMccjFJAIv6A+rW+L4AHf99KvxDjWSu1z9VI8SKNVmz4sk7buKt/6v9KI65qnm" crossorigin="anonymous"></script>
     <!-- jQuery Custom Scroller CDN -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/malihu-custom-scrollbar-plugin/3.1.5/jquery.mCustomScrollbar.concat.min.js"></script>
-
+    <!-- datatables CDN -->
+    <!-- <script type="text/javascript" src="https://cdn.datatables.net/v/dt/dt-1.10.22/b-1.6.5/b-html5-1.6.5/datatables.min.js"></script>-->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.10.22/b-1.6.5/b-html5-1.6.5/b-print-1.6.5/cr-1.5.2/fc-3.3.1/fh-3.1.7/kt-2.5.3/r-2.2.6/rr-1.2.7/sc-2.0.3/sl-1.3.1/datatables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.19/sorting/datetime-moment.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/1.10.21/sorting/custom-data-source/dom-checkbox.js"></script>
+     
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     <!-- Freezze Column -->
     <script src="~/js/sticky.js"></script>
 
     @RenderSection("Scripts", required: false)
-
 
     <script type="text/javascript">
         $(document).ready(function () {

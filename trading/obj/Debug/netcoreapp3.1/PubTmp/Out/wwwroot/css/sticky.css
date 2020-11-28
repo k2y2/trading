@@ -26,7 +26,7 @@
 
             .wrapper-sticky table tr.st-sticky-top th, .wrapper-sticky table tr.st-sticky-top td,
             .wrapper-sticky table tr.st-sticky-bottom th, .wrapper-sticky table tr.st-sticky-bottom td {
-                background-color: #fff;
+                background-color: #f7f7f7;
                 border-top: 0;
                 position: relative;
                 position: -webkit-sticky;
@@ -46,7 +46,7 @@
 
             .wrapper-sticky table td.st-sticky-left, .wrapper-sticky table th.st-sticky-left,
             .wrapper-sticky table td.st-sticky-right, .wrapper-sticky table th.st-sticky-right {
-                background-color: #fff;
+                background-color: #f7f7f7;
                 outline: 1px solid #ddd;
                 position: relative;
                 position: -webkit-sticky;

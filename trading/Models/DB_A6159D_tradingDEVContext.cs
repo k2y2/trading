@@ -15,8 +15,8 @@ namespace trading.Models
         {
         }
 
-        public virtual DbSet<ReportCommission1> ReportCommission1 { get; set; }
-        public virtual DbSet<ReportCommission2> ReportCommission2 { get; set; }
+        public virtual DbSet<Txn> Txn { get; set; }
+        public virtual DbSet<TxnView> TxnView { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

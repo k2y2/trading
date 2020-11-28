@@ -5,16 +5,68 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script src="https://code.jquery.com/jquery-3.5.0.js" integrity="sha256-r/AaFHrszJtwpe+tHyNi/XCfMxYpbsRg2Uqn0x3s2zc=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $.fn.dataTable.moment('M/D/YYYY');
+        var table = $('#tblAccountPayable').DataTable({
+            "paging": false,
+            "ordering": true,
+            "info": false,
+            "searching": false
+        });
+
+    });
+</script>
+
 <h1>Account Payable</h1>
- 
-<table class="table table-striped table-bordered">
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            <table class="table-borderless">
+                <tr>
+                    <td>Client Trading Profile:</td>
+                    <td>@Html.DropDownList("clientTradingProfileID", ViewBag.ClientTradingProfile as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>Currency Out:</td>
+                    <td>@Html.DropDownList("currencyID", ViewBag.Currency as SelectList, "", new { @class = "form-control" })</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td><input type="date" id="dateFilterStart" name="dateFilterStart" value="@ViewBag.dateFilterStart" /></td>
+                    <td><input type="date" id="dateFilterEnd" name="dateFilterEnd" value="@ViewBag.dateFilterEnd" /></td>
+                    <td><input type="submit" value="Search" class="btn btn-default" /></td>
+                </tr>
+            </table>
+        </p>
+    </div>
+</form>
+
+<table id="tblAccountPayable" class="table table-striped table-bordered table-sticky" data-sticky-top="thead tr:first-child" data-sticky-left="tr td:first-child, tr th:first-child">
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.ClientTradingProfileName)
-            </th> 
+            </th>
             <th>
-                @Html.DisplayNameFor(model => model.TradeDate)
+                @Html.DisplayNameFor(model => model.TradeDateSince)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TradeDateUp)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceIn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ClientCurrencyNameIn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BalanceInUSD)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ClientAmountUncompleted)
@@ -27,32 +79,65 @@
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Rate)
-            </th> 
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActiveDays)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ActiveDaysWeekend)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DaysWeekend)
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientTradingProfileName)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TradeDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientAmountUncompleted)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientCurrencyNameOut)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ClientAmountUncompletedUSD)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rate)
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientTradingProfileName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TradeDateSince)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.TradeDateUp)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceIn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientCurrencyNameIn)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BalanceInUSD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientAmountUncompleted)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientCurrencyNameOut)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClientAmountUncompletedUSD)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActiveDays)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ActiveDaysWeekend)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DaysWeekend)
+                </td>
+            </tr>
         }
     </tbody>
+    <tfoot>
+        <tr><td></td><td></td><td>Total</td><td></td><td></td><td>@ViewBag.TotalInUSD</td><td>@ViewBag.TotalOut</td><td></td><td><label class="control-label">@ViewBag.TotalOutUSD</label></td><td></td><td></td><td></td><td></td></tr>
+    </tfoot>
 </table>

@@ -33,28 +33,28 @@ namespace trading.Models
         public short? ClientCurrencyPairID { get; set; }
 
         [Display(Name = "Client DFR")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal? ClientDfrRate { get; set; }
 
         [Display(Name = "Client Unique DFR")]
         public bool ClientUniqueDfr { get; set; }
 
         [Display(Name = "Client Exchange Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n8}", ApplyFormatInEditMode = true)]
         public decimal? ClientExRate { get; set; }
 
         [Display(Name = "Client Currency In")]
         public byte ClientCurrencyIDIn { get; set; }
 
         [Display(Name = "Client Amount In")]
-        [DisplayFormat(DataFormatString = "{0:n2}")]
+        [DisplayFormat(DataFormatString = "{0:n4}")]
         public decimal ClientAmountIn { get; set; }
 
         [Display(Name = "Client Currency Out")]
         public byte? ClientCurrencyIDOut { get; set; }
 
         [Display(Name = "Client Amount Out")]
-        [DisplayFormat(DataFormatString = "{0:n2}")]
+        [DisplayFormat(DataFormatString = "{0:n4}")]
         public decimal? ClientAmountOut { get; set; }
 
         [Display(Name = "Client Pay Out Account")]
@@ -71,11 +71,11 @@ namespace trading.Models
         public DateTime? ProviderCostDate { get; set; }
 
         [Display(Name = "Provider Cost Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n6}", ApplyFormatInEditMode = true)]
         public decimal? ProviderCostRate { get; set; }
 
         [Display(Name = "Provider Expected Pay In Amount")]
-        [DisplayFormat(DataFormatString = "{0:n2}")]
+        [DisplayFormat(DataFormatString = "{0:n4}")]
         public decimal? ProviderExpectedPayInAmount { get; set; }
 
         [Display(Name = "Provider Bank Account")]
@@ -86,6 +86,21 @@ namespace trading.Models
 
         [Display(Name = "Added")]
         public DateTime DateTimeAdded { get; set; }
+
+        public string Remark { get; set; }
+
+        [Display(Name = "Payout Done")]
+        public bool PayoutDone { get; set; }
+
+        [Display(Name = "Mini Account")]
+        public bool MiniAccount { get; set; }
+
+        [Display(Name = "Overnight Deposit")]
+        public bool OvernightDeposit { get; set; }
+
+        public int? PayoutDoneByID { get; set; }
+        public int? ModifiedByID { get; set; }
+        public int? AddedByID { get; set; }
     }
 
     public partial class TxnView
@@ -117,28 +132,28 @@ namespace trading.Models
         public short? ClientCurrencyPairID { get; set; }
 
         [Display(Name = "Client DFR")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n7}", ApplyFormatInEditMode = true)]
         public decimal? ClientDfrRate { get; set; }
 
         [Display(Name = "Client Unique DFR")]
         public bool ClientUniqueDfr { get; set; }
 
         [Display(Name = "Client Exchange Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n8}", ApplyFormatInEditMode = true)]
         public decimal? ClientExRate { get; set; }
 
         [Display(Name = "Client Currency In")]
         public byte ClientCurrencyIDIn { get; set; }
 
         [Display(Name = "Client Amount In")]
-        [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
         public decimal ClientAmountIn { get; set; }
 
         [Display(Name = "Client Currency Out")]
         public byte? ClientCurrencyIDOut { get; set; }
 
         [Display(Name = "Client Amount Out")]
-        [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
         public decimal? ClientAmountOut { get; set; }
 
         [Display(Name = "Client Pay Out Account")]
@@ -155,11 +170,11 @@ namespace trading.Models
         public DateTime? ProviderCostDate { get; set; }
 
         [Display(Name = "Provider Cost Rate")]
-        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n6}", ApplyFormatInEditMode = true)]
         public decimal? ProviderCostRate { get; set; }
 
         [Display(Name = "Provider Expected Pay In Amount")]
-        [DisplayFormat(DataFormatString = "{0:n2}", ApplyFormatInEditMode = true)]
+        [DisplayFormat(DataFormatString = "{0:n4}", ApplyFormatInEditMode = true)]
         public decimal? ProviderExpectedPayInAmount { get; set; }
 
         [Display(Name = "Provider Bank Account")]
@@ -171,23 +186,39 @@ namespace trading.Models
         [Display(Name = "Added")]
         public DateTime DateTimeAdded { get; set; }
 
+        public string Remark { get; set; }
+
+        [Display(Name = "Payout Done")]
+        public bool PayoutDone { get; set; }
+
+        [Display(Name = "Mini Account")]
+        public bool MiniAccount { get; set; }
+
+        [Display(Name = "Overnight Deposit")]
+        public bool OvernightDeposit { get; set; } 
+
+        public int? PayoutDoneByID { get; set; }
+        public int? ModifiedByID { get; set; }
+        public int? AddedByID { get; set; }
 
 
         [Display(Name = "Linked Deposit")]
         public string LinkedDepositReferenceNo { get; set; }
-          
+
+        public int ClientID { get; set; }
+
         [Display(Name = "Client Trading Profile")]
         public string ClientTradingProfileName { get; set; }
-            
+
         [Display(Name = "Client Currency Pair")]
         public string ClientCurrencyPairName { get; set; }
-          
+
         [Display(Name = "Client Currency In")]
         public string ClientCurrencyNameIn { get; set; }
-         
+
         [Display(Name = "Client Currency Out")]
         public string ClientCurrencyNameOut { get; set; }
-          
+
         [Display(Name = "Client Pay Out Account")]
         public string ClientPayOutAccountName { get; set; }
 
@@ -196,12 +227,21 @@ namespace trading.Models
 
         [Display(Name = "Provider Currency")]
         public string ProviderCurrencyName { get; set; }
-            
+
         [Display(Name = "Provider Bank Account")]
         public string ProviderBankAccountName { get; set; }
 
         [Display(Name = "Alert")]
         public string Alert { get; set; }
+
+        [Display(Name = "Payout Done By")]
+        public string PayoutDoneBy { get; set; }
+
+        [Display(Name = "Modified By")]
+        public string ModifiedBy { get; set; }
+
+        [Display(Name = "Added By")]
+        public string AddedBy { get; set; }
     }
 
     public partial class TxnCompleteView
@@ -215,7 +255,7 @@ namespace trading.Models
         public string Status { get; set; }
         public decimal? ClientPriceRate { get; set; }
         public short? ClientCurrencyPairID { get; set; }
-        public decimal? ClientDfrRate { get; set; } 
+        public decimal? ClientDfrRate { get; set; }
         public bool ClientUniqueDfr { get; set; }
         public decimal? ClientExRate { get; set; }
         public byte ClientCurrencyIDIn { get; set; }
@@ -251,5 +291,8 @@ namespace trading.Models
         public decimal? LinkedProviderExpectedPayInAmount { get; set; }
         public int? LinkedProviderBankAccountID { get; set; }
         public string LinkedProviderBankAccountName { get; set; }
+
+        public decimal? ClientPayoutAmountOutstanding { get; set; }
+        
     }
 }

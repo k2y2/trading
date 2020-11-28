@@ -61,6 +61,18 @@ namespace trading.Controllers
 
             return View(payoutView);
         }
+        
+        [HttpGet]
+        public JsonResult UpdateTxn(int clientTradingProfileID)
+        { 
+            var txn = new SelectList(_context.TxnView.Where(t=>(clientTradingProfileID==0 || t.ClientTradingProfileID == clientTradingProfileID) && t.Type != "D" && t.Status != "C" && t.PayoutDone).OrderBy(m => m.ReferenceNo)
+                .Select(t => new
+                {
+                    id = t.id,
+                    text = t.ClientTradingProfileName + ", " + t.TradeDate.ToString() + ", " + (t.ClientAmountOut.ToString() ?? "") + ", " + (t.ClientCurrencyNameOut ?? "") + ", " + t.ReferenceNo
+                }).ToList(), "id", "text");
+            return Json(txn); 
+        }
 
         [HttpGet]
         public JsonResult GetTxn(int txnID)
@@ -71,8 +83,15 @@ namespace trading.Controllers
 
         // GET: Payout/Create
         public IActionResult Create()
-        {
-            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C").OrderBy(m=>m.ReferenceNo)
+        {            
+            ViewBag.ClientTradingProfile = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone)
+                .Select(t => new
+                {
+                    id = t.ClientTradingProfileID,
+                    text = t.ClientTradingProfileName 
+                }).Distinct().OrderBy(t => t.text).ToList(), "id", "text"); 
+
+            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone).OrderBy(m=>m.ReferenceNo)
                 .Select(t => new 
                 {
                     id = t.id,
@@ -103,19 +122,22 @@ namespace trading.Controllers
 
                 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
                 //check ClientPayoutMissing, update Status
-                var reportTxn = await _context.ReportTxn.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
+                var reportTxn = await _context.ReportTxnOriginal.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
                 if (reportTxn != null)
-                {
-                    if (reportTxn.ClientPayoutMissing <= 0)
+                { 
+                    var txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payout.TxnID);
+                    if (txn != null)
                     {
-                        var txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payout.TxnID);
-                        if (txn != null)
-                        {
+                        if (reportTxn.ClientPayoutMissing < reportTxn.ClientAmountOut && reportTxn.ClientPayoutMissing > 0)
+                            txn.Status = "P";
+                        else if (reportTxn.ClientPayoutMissing <= 0)
                             txn.Status = "C";
-                            _context.Update(txn);
-                            await _context.SaveChangesAsync();
-                        }
-                    }
+                        else
+                            txn.Status = ""; 
+
+                        _context.Update(txn);
+                        await _context.SaveChangesAsync();
+                    } 
                 }
                 /////////////////////////////////////////////////////////////////////////////////////////////////////////// 
                 //update AccountTxn
@@ -131,8 +153,15 @@ namespace trading.Controllers
                 /////////////////////////////////////////////////////////////////////////////
                 return RedirectToAction(nameof(Index));
             }
-           
-            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C").OrderBy(m => m.ReferenceNo)
+
+            ViewBag.ClientTradingProfile = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone)
+                .Select(t => new
+                {
+                    id = t.ClientTradingProfileID,
+                    text = t.ClientTradingProfileName
+                }).Distinct().OrderBy(t => t.text).ToList(), "id", "text");
+
+            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone).OrderBy(m => m.ReferenceNo)
                 .Select(t => new
                 {
                     id = t.id,
@@ -158,7 +187,13 @@ namespace trading.Controllers
                 return NotFound();
             }
 
-            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.id == payout.TxnID || (t.Type != "D" && t.Status != "C")).OrderBy(m => m.ReferenceNo)
+            ViewBag.ClientTradingProfile = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone)
+                .Select(t => new
+                {
+                    id = t.ClientTradingProfileID,
+                    text = t.ClientTradingProfileName
+                }).Distinct().OrderBy(t => t.text).ToList(), "id", "text");
+            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.id == payout.TxnID || (t.Type != "D" && t.Status != "C" && t.PayoutDone)).OrderBy(m => m.ReferenceNo)
                 .Select(t => new
                 {
                     id = t.id,
@@ -186,7 +221,7 @@ namespace trading.Controllers
             {
                 try
                 {
-                    ReportTxn reportTxn;
+                    ReportTxnOriginal reportTxn;
                     Txn txn;
 
                     var payoutOld = await _context.Payout.AsNoTracking().SingleOrDefaultAsync(m => m.id == id);
@@ -198,11 +233,13 @@ namespace trading.Controllers
 
                     ///////////////////////////////////////////////////////////////////////////////////////////////////////////
                     //check ClientPayoutMissing, update Status
-                    reportTxn = await _context.ReportTxn.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
+                    reportTxn = await _context.ReportTxnOriginal.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
                     txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payout.TxnID);
                     if (txn != null && reportTxn != null)
                     {
-                        if (reportTxn.ClientPayoutMissing <= 0)
+                        if (reportTxn.ClientPayoutMissing < reportTxn.ClientAmountOut && reportTxn.ClientPayoutMissing > 0)
+                            txn.Status = "P";
+                        else if (reportTxn.ClientPayoutMissing <= 0)
                             txn.Status = "C"; 
                         else 
                             txn.Status = ""; 
@@ -214,12 +251,14 @@ namespace trading.Controllers
                     //if associated txnID changed, update the original txn
                     if (payoutOld.TxnID != payout.TxnID)
                     {
-                        reportTxn = await _context.ReportTxn.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payoutOld.TxnID);
+                        reportTxn = await _context.ReportTxnOriginal.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payoutOld.TxnID);
                         txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payoutOld.TxnID);
                         if (txn != null)
                         {
-                            if (reportTxn == null || reportTxn.ClientPayoutMissing > 0)
+                            if (reportTxn == null || reportTxn.ClientPayoutMissing >= reportTxn.ClientAmountOut)
                                 txn.Status = "";
+                            else if (reportTxn.ClientPayoutMissing > 0)
+                                txn.Status = "P";
                             else
                                 txn.Status = "C";
 
@@ -254,7 +293,13 @@ namespace trading.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.id == payout.TxnID || (t.Type != "D" && t.Status != "C")).OrderBy(m => m.ReferenceNo)
+            ViewBag.ClientTradingProfile = new SelectList(_context.TxnView.Where(t => t.Type != "D" && t.Status != "C" && t.PayoutDone)
+                .Select(t => new
+                {
+                    id = t.ClientTradingProfileID,
+                    text = t.ClientTradingProfileName
+                }).Distinct().OrderBy(t => t.text).ToList(), "id", "text");
+            ViewBag.Txn = new SelectList(_context.TxnView.Where(t => t.id == payout.TxnID || (t.Type != "D" && t.Status != "C" && t.PayoutDone)).OrderBy(m => m.ReferenceNo)
                 .Select(t => new
                 {
                     id = t.id,
@@ -301,18 +346,22 @@ namespace trading.Controllers
 
             ///////////////////////////////////////////////////////////////////////////////////////////////////////////
             //check ClientPayoutMissing, update Status
-            var reportTxn = await _context.ReportTxn.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
-            if (reportTxn==null || reportTxn.ClientPayoutMissing > 0)
-            {
-                var txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payout.TxnID);
-                if (txn != null)
-                {
+            var reportTxn = await _context.ReportTxnOriginal.AsNoTracking().SingleOrDefaultAsync(m => m.TxnID == payout.TxnID);
+             
+            var txn = await _context.Txn.AsNoTracking().SingleOrDefaultAsync(m => m.id == payout.TxnID);
+            if (txn != null)
+            { 
+                if (reportTxn == null || reportTxn.ClientPayoutMissing >= reportTxn.ClientAmountOut)
                     txn.Status = "";
-                    _context.Update(txn);
-                    await _context.SaveChangesAsync();
-                }
+                else if (reportTxn.ClientPayoutMissing > 0)
+                    txn.Status = "P";
+                else
+                    txn.Status = "C";
+                     
+                _context.Update(txn);
+                await _context.SaveChangesAsync();
             }
-            
+              
             return RedirectToAction(nameof(Index));
         }
 

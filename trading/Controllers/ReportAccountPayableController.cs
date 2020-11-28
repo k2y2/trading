@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using trading.Class;
 using trading.Models;
 
 namespace trading.Controllers
@@ -19,9 +21,41 @@ namespace trading.Controllers
         }
 
         // GET: ReportAccountPayable
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int clientTradingProfileID, int currencyID, DateTime dateFilterStart, DateTime dateFilterEnd)
         {
-            return View(await _context.ReportAccountPayable.ToListAsync());
+            ViewBag.ClientTradingProfile = new SelectList(_context.ClientTradingProfile.ToList()
+                      .OrderBy(m => m.ClientTradingProfileName), "id", "ClientTradingProfileName", clientTradingProfileID);
+
+            ViewBag.Currency = new SelectList(_context.Currency.ToList()
+                      .OrderBy(m => m.CurrencyName), "id", "CurrencyName", currencyID);
+
+            //date range
+            if (dateFilterStart == DateTime.MinValue) dateFilterStart = Utility.GetLocalDateTime().Date.AddMonths(-3); 
+            if (dateFilterEnd == DateTime.MinValue) dateFilterEnd = Utility.GetLocalDateTime().Date;
+
+            ViewBag.dateFilterStart = dateFilterStart.ToString("yyyy-MM-dd");
+            ViewBag.dateFilterEnd = dateFilterEnd.ToString("yyyy-MM-dd");
+
+
+            //var clientTradingProfileID = 0;
+            //var clientCurrencyIDOut = 0;
+            //var tradeDateFrom = "2020-05-02";
+            //var tradeDateTo = "2020-10-02";
+
+            var reportAccountPayable = await _context.ReportAccountPayable
+                .FromSqlRaw("EXECUTE dbo.sp_ReportAccountPayable {0},{1},{2},{3}", clientTradingProfileID, currencyID, dateFilterStart, dateFilterEnd)
+                .ToListAsync();
+
+            ViewBag.TotalInUSD = String.Format("{0:0,0.00}", reportAccountPayable.Sum(x => x.BalanceInUSD)); 
+            ViewBag.TotalOut = currencyID>0 ? String.Format("{0:0,0.00}", reportAccountPayable.Sum(x => x.ClientAmountUncompleted)) : "";
+            ViewBag.TotalOutUSD = String.Format("{0:0,0.00}", reportAccountPayable.Sum(x => x.ClientAmountUncompletedUSD));
+            
+            if (HttpContext.Session.GetString("Role") == "S")
+                return View(reportAccountPayable);
+
+            return RedirectToAction("Logout", "Home");
+            
+            //return View(await _context.ReportAccountPayable.ToListAsync());
         }
 
         // GET: ReportAccountPayable/Details/5
